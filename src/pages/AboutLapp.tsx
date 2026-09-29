@@ -49,11 +49,25 @@ export const AboutLapp: React.FC = () => {
       img: "/images/card-infra.jpg",
       topic: "Quote for LAPP INFRA Building Wires",
     },
+    {
+      brand: "ÖLFLEX® SERVO",
+      title: "Servo & Motion Control Cables",
+      desc: "Double-shielded low capacitance EMC cables for servo drive systems (ÖLFLEX® SERVO 719, 9YSLCY-JB, FD 855 CP).",
+      img: "/images/cable-olflex-cores.png",
+      topic: "Quote for ÖLFLEX SERVO Cables",
+    },
+    {
+      brand: "EPIC®",
+      title: "Industrial Heavy-Duty Connectors",
+      desc: "Heavy-duty rectangular and circular industrial multipole connectors (EPIC® H-BE, H-A, ULTRA) rated up to IP68.",
+      img: "/images/brand-lapp-hero.png",
+      topic: "Quote for EPIC Industrial Connectors",
+    },
   ];
 
   return (
     <div className="min-h-screen bg-slate-100/80 py-8 px-4 sm:px-6 lg:px-8 text-slate-900">
-      <div className="w-full space-y-8">
+      <div className="max-w-7xl mx-auto w-full space-y-8">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-xs text-slate-500">
           <Link to="/" className="hover:text-amber-600 transition-colors font-medium">
@@ -158,7 +172,7 @@ export const AboutLapp: React.FC = () => {
 
                   {/* Action Button */}
                   <div className="pt-5 mt-4">
-                    {item.isOlflex ? (
+                    {idx === 0 || item.isOlflex ? (
                       <Link
                         to="/olflex-cables"
                         className="w-full py-2.5 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-xs"
@@ -168,7 +182,7 @@ export const AboutLapp: React.FC = () => {
                     ) : (
                       <button
                         onClick={() => setRfqTopic(item.topic || `Quote for ${item.brand} ${item.title}`)}
-                        className="w-full py-2.5 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors shadow-xs"
+                        className="w-full py-2.5 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center shadow-xs"
                       >
                         REQUEST QUOTE
                       </button>

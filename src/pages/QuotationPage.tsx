@@ -32,7 +32,7 @@ export const QuotationPage: React.FC = () => {
   const { showToast } = useToast();
 
   // Quotation Document Metadata
-  const [quoteNo, setQuoteNo] = useState(() => `SE-EST-${Date.now().toString().slice(-6)}`);
+  const [quoteNo, setQuoteNo] = useState(() => `RFQ-${Date.now().toString().slice(-6)}`);
   const [quoteDate, setQuoteDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [buyerCompany, setBuyerCompany] = useState(user?.company || "Apex Automation & Switchgear Pvt Ltd");
   const [buyerName, setBuyerName] = useState(user?.name || "Purchasing Manager");
@@ -43,7 +43,7 @@ export const QuotationPage: React.FC = () => {
   const [buyerCity, setBuyerCity] = useState(user?.city || "Bangalore");
   const [buyerState, setBuyerState] = useState(user?.state || "Karnataka");
   const [isInterstate, setIsInterstate] = useState(false);
-  const [poReference, setPoReference] = useState("RFQ-PRJ-2026/08");
+  const [poReference, setPoReference] = useState("");
   const [deliveryTerms, setDeliveryTerms] = useState("Ex-Stock Bangalore Warehouse (Dispatched in 24-48 Hours)");
   const [paymentTerms, setPaymentTerms] = useState("30 Days Credit against Approved Corporate PO");
 
@@ -143,11 +143,11 @@ export const QuotationPage: React.FC = () => {
       grandTotal,
       deliveryTerms,
       paymentTerms,
-      status: "Generated",
+      status: "RFQ Submitted",
     };
 
     saveQuote(doc);
-    showToast(`Quotation ${quoteNo} saved to your corporate dashboard!`, "success");
+    showToast(`RFQ ${quoteNo} submitted successfully! Our team will review and send you a formal quotation.`, "success");
   };
 
   return (
@@ -159,7 +159,7 @@ export const QuotationPage: React.FC = () => {
         <div className="absolute -bottom-32 right-10 w-[500px] h-[500px] rounded-full bg-emerald-500/15 blur-3xl" />
       </div>
 
-      <div className="relative z-10 w-full space-y-8">
+      <div className="relative z-10 max-w-7xl mx-auto w-full space-y-8">
         {/* Breadcrumb & Navigation */}
         <div className="no-print flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-xs text-slate-400">
@@ -167,7 +167,7 @@ export const QuotationPage: React.FC = () => {
               Home
             </Link>
             <span>/</span>
-            <span className="text-white font-bold">B2B Commercial Quotation Page</span>
+            <span className="text-white font-bold">Request for Quotation (RFQ)</span>
           </div>
 
           {/* Action Toolbar */}
@@ -175,10 +175,10 @@ export const QuotationPage: React.FC = () => {
             <button
               onClick={() => setQuoteNo(`SE-EST-${Date.now().toString().slice(-6)}`)}
               className="px-3.5 py-2 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 hover:text-white transition-all flex items-center gap-1.5 shadow-md"
-              title="Generate new quotation reference"
+              title="Generate new RFQ reference"
             >
               <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
-              <span>New Ref #</span>
+              <span>New RFQ #</span>
             </button>
 
             <button
@@ -196,7 +196,7 @@ export const QuotationPage: React.FC = () => {
               className="px-3.5 py-2 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 hover:text-white transition-all flex items-center gap-1.5 disabled:opacity-40 shadow-md"
             >
               <FileSpreadsheet className="w-3.5 h-3.5 text-amber-400" />
-              <span>Archive in Portal</span>
+              <span>Submit RFQ</span>
             </button>
 
             <button
@@ -205,7 +205,7 @@ export const QuotationPage: React.FC = () => {
               className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg shadow-amber-500/25 disabled:opacity-40"
             >
               <Printer className="w-4 h-4" />
-              <span>Print Official PDF</span>
+              <span>Print RFQ</span>
             </button>
           </div>
         </div>
@@ -219,7 +219,7 @@ export const QuotationPage: React.FC = () => {
                 <span>Client &amp; Tax Configuration</span>
               </h3>
               <p className="text-xs text-slate-400 font-medium">
-                Customize buyer details, GSTIN for input tax credit, and freight destination.
+                Customize buyer details, organization info, and freight destination.
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -255,20 +255,21 @@ export const QuotationPage: React.FC = () => {
               />
             </div>
             <div>
-              <label className="text-slate-300 block mb-1 font-bold">Buyer GSTIN</label>
-              <input
-                type="text"
-                value={buyerGstin}
-                onChange={(e) => setBuyerGstin(e.target.value)}
-                className="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-2 text-white font-mono uppercase font-bold focus:border-amber-500 focus:outline-none"
-              />
-            </div>
-            <div>
               <label className="text-slate-300 block mb-1 font-bold">Project Site / City</label>
               <input
                 type="text"
                 value={buyerCity}
                 onChange={(e) => setBuyerCity(e.target.value)}
+                className="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-2 text-white focus:border-amber-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-slate-300 block mb-1 font-bold">Project / Ref Name</label>
+              <input
+                type="text"
+                value={poReference}
+                onChange={(e) => setPoReference(e.target.value)}
+                placeholder="e.g. Phase 1 Expansion"
                 className="w-full bg-slate-800/90 border border-slate-700 rounded-xl p-2 text-white focus:border-amber-500 focus:outline-none"
               />
             </div>
@@ -378,23 +379,11 @@ export const QuotationPage: React.FC = () => {
                   }}
                 />
               </div>
-              <p className="text-xs uppercase tracking-wider font-bold text-amber-700">
-                Authorized Stockist: LAPP KABEL · EATON · MENNEKES · PARTEX
-              </p>
-              <p className="text-xs text-zinc-600 max-w-md leading-relaxed">
-                Central Industrial Supply Hub, No. 12/3, S.P. Road Cross, Bangalore - 560002, Karnataka, India<br />
-                Direct Sales: +91 99000 48877 · Email: sales@siddhikabel.com · Web: siddhi-eshop.com
-              </p>
-              <div className="flex items-center gap-4 text-xs font-mono text-zinc-700 pt-1">
-                <span>GSTIN: <strong>29AAYCS8872M1ZQ</strong></span>
-                <span>PAN: <strong>AAYCS8872M</strong></span>
-              </div>
             </div>
-
             {/* Quotation Identity Box */}
             <div className="sm:text-right bg-slate-50 border border-slate-200 rounded-2xl p-4 min-w-[240px]">
               <div className="text-xs uppercase font-bold text-slate-500 tracking-wider">
-                Commercial Proforma Quote
+                Request for Quotation (RFQ)
               </div>
               <div className="text-xl font-black font-mono text-slate-900 mt-1">
                 {quoteNo}
@@ -404,23 +393,20 @@ export const QuotationPage: React.FC = () => {
                   <span className="text-slate-500">Date:</span>
                   <span className="font-bold text-slate-900">{quoteDate}</span>
                 </div>
-                <div className="flex justify-between sm:justify-end gap-3">
-                  <span className="text-slate-500">Validity:</span>
-                  <span className="font-medium text-slate-900">30 Days from Issue</span>
-                </div>
-                <div className="flex justify-between sm:justify-end gap-3">
-                  <span className="text-slate-500">PO Ref:</span>
-                  <span className="font-mono text-slate-900 font-bold">{poReference}</span>
-                </div>
+                {poReference && (
+                  <div className="flex justify-between sm:justify-end gap-3">
+                    <span className="text-slate-500">Project / Ref:</span>
+                    <span className="font-mono text-slate-900 font-bold">{poReference}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* Buyer & Consignee Information */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 py-6 border-b border-zinc-200 text-xs">
             <div>
               <h4 className="font-bold text-slate-500 uppercase tracking-wider mb-2">
-                Quotation Issued To (Buyer):
+                Requested By:
               </h4>
               <div className="text-sm font-black text-slate-900 mb-1">{buyerCompany}</div>
               <div className="text-slate-700 leading-relaxed font-medium">
@@ -429,40 +415,12 @@ export const QuotationPage: React.FC = () => {
                 {buyerCity}, {buyerState} - India<br />
                 Phone: {buyerPhone} · Email: {buyerEmail}
               </div>
-              <div className="mt-2 text-xs font-mono text-slate-800">
-                Buyer GSTIN: <strong>{buyerGstin || "UNREGISTERED / NOT PROVIDED"}</strong>
-              </div>
             </div>
-
-            <div>
-              <h4 className="font-bold text-slate-500 uppercase tracking-wider mb-2">
-                Dispatch &amp; Commercial Terms:
-              </h4>
-              <div className="text-slate-700 space-y-1.5 font-medium">
-                <div>
-                  <span className="text-slate-500">Delivery Point:</span>{" "}
-                  <strong className="text-slate-900">{buyerCity} Site / Bangalore Dispatch</strong>
-                </div>
-                <div>
-                  <span className="text-slate-500">Lead Time:</span>{" "}
-                  <strong className="text-slate-900">{deliveryTerms}</strong>
-                </div>
-                <div>
-                  <span className="text-slate-500">Payment:</span>{" "}
-                  <strong className="text-slate-900">{paymentTerms}</strong>
-                </div>
-                <div>
-                  <span className="text-slate-500">Freight:</span>{" "}
-                  <strong className="text-slate-900">To Pay / Extra at Actuals to Site</strong>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* Itemized Bill of Materials: Responsive Cards for Mobile, Full Table for Desktop & Print */}
           <div className="py-6">
             <h4 className="font-bold text-slate-900 uppercase tracking-wider text-xs mb-3">
-              Bill of Materials &amp; Rate Schedule
+              Requested Items &amp; Specifications
             </h4>
 
             {cart.length === 0 ? (
@@ -507,7 +465,7 @@ export const QuotationPage: React.FC = () => {
                           </button>
                         </div>
 
-                        {/* Quantity and Price Row */}
+                        {/* Quantity Row */}
                         <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-200/80">
                           <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-0.5 shadow-2xs">
                             <button
@@ -528,13 +486,10 @@ export const QuotationPage: React.FC = () => {
                               + {isMeter && <span className="text-[10px] font-mono">25</span>}
                             </button>
                           </div>
-
-                          <div className="text-right">
-                            <div className="font-mono text-slate-950 font-black text-xs tabular-nums">
+                          <div className="text-right flex-1 min-w-0 pt-1">
+                            <div className="text-[10px] text-slate-500 font-mono">@ ₹{item.price.toFixed(2)}/{item.unit}</div>
+                            <div className="font-mono font-black text-slate-900 tabular-nums text-sm">
                               ₹{lineTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                            </div>
-                            <div className="text-[10px] text-slate-500 font-mono">
-                              @ ₹{item.price.toFixed(2)}/{item.unit}
                             </div>
                           </div>
                         </div>
@@ -599,10 +554,10 @@ export const QuotationPage: React.FC = () => {
                               </span>
                               {item.qty} {item.unit}
                             </td>
-                            <td className="py-3 px-3 text-right font-mono tabular-nums text-slate-800 font-medium whitespace-nowrap">
+                            <td className="py-3 px-3 text-right font-mono text-slate-700 whitespace-nowrap">
                               ₹{item.price.toFixed(2)}
                             </td>
-                            <td className="py-3 px-3 text-right font-mono font-black tabular-nums text-slate-950 whitespace-nowrap">
+                            <td className="py-3 px-3 text-right font-mono font-bold text-slate-900 whitespace-nowrap">
                               ₹{lineTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                             </td>
                             <td className="no-print py-3 px-2 text-center">
@@ -620,122 +575,91 @@ export const QuotationPage: React.FC = () => {
                     </tbody>
                   </table>
                 </div>
+
+                {/* Financial Summary */}
+                <div className="mt-6 flex flex-col md:flex-row justify-between items-start gap-8">
+                  {/* Terms & Bank Details */}
+                  <div className="w-full md:w-1/2 space-y-6">
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider mb-2 border-b-2 border-slate-200 pb-1">
+                        Dispatch & Commercial Terms:
+                      </h4>
+                      <ul className="text-[11px] text-slate-700 space-y-1 font-medium leading-relaxed">
+                        <li><span className="font-bold text-slate-900">Delivery Point:</span> {buyerCity} Site / Bangalore Dispatch</li>
+                        <li><span className="font-bold text-slate-900">Lead Time:</span> Ex-Stock Bangalore Warehouse (Dispatched in 24-48 Hours)</li>
+                        <li><span className="font-bold text-slate-900">Payment:</span> 30 Days Credit against Approved Corporate PO</li>
+                        <li><span className="font-bold text-slate-900">Freight:</span> To Pay / Extra at Actuals to Site</li>
+                        <li><span className="font-bold text-slate-900">Validity:</span> 30 Days from Issue</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Calculations */}
+                  <div className="w-full md:w-[320px] shrink-0 border border-slate-300 rounded-2xl p-4 bg-slate-50">
+                    <div className="space-y-2 text-xs">
+                      {discountAmount > 0 && (
+                        <div className="flex justify-between items-center text-slate-600">
+                          <span>Gross Material Value</span>
+                          <span className="font-mono tabular-nums">₹{(subtotal + discountAmount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                        </div>
+                      )}
+                      {discountAmount > 0 && (
+                        <div className="flex justify-between items-center text-amber-700 font-bold">
+                          <span>OEM Discount ({(discountRate * 100).toFixed(0)}%)</span>
+                          <span className="font-mono tabular-nums">- ₹{discountAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center font-bold text-slate-900">
+                        <span>Taxable Value</span>
+                        <span className="font-mono tabular-nums">₹{subtotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                      </div>
+                      
+                      {isInterstate ? (
+                        <div className="flex justify-between items-center text-slate-600 pt-2 border-t border-slate-200">
+                          <span>IGST (18%)</span>
+                          <span className="font-mono tabular-nums">₹{gstAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex justify-between items-center text-slate-600 pt-2 border-t border-slate-200">
+                            <span>CGST (9%)</span>
+                            <span className="font-mono tabular-nums">₹{(gstAmount / 2).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-slate-600">
+                            <span>SGST (9%)</span>
+                            <span className="font-mono tabular-nums">₹{(gstAmount / 2).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                          </div>
+                        </>
+                      )}
+                      
+                      <div className="flex justify-between items-end pt-3 mt-3 border-t-2 border-zinc-900 text-sm font-black text-slate-900">
+                        <span className="uppercase tracking-wider">Grand Total</span>
+                        <span className="font-mono tabular-nums text-lg">₹{grandTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-12 flex justify-between items-end">
+                  <div className="text-[10px] text-slate-500 max-w-sm">
+                    This is a system generated commercial quotation and does not require a physical signature. 
+                    <br />E. & O.E. Subject to Bangalore Jurisdiction.
+                  </div>
+                  <div className="text-center space-y-1">
+                    <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-8">
+                      Authorized Signatory
+                    </div>
+                    <div className="font-black text-slate-900 border-t border-slate-300 pt-1">
+                      SIDDHI KABEL CORPORATION
+                    </div>
+                  </div>
+                </div>
               </>
             )}
           </div>
 
-          {/* Financial Calculation Block */}
-          {cart.length > 0 && (
-            <div className="pt-4 border-t-2 border-zinc-900 grid grid-cols-1 sm:grid-cols-2 gap-8 items-start">
-              {/* Payment Details & Bank Transfer */}
-              <div className="text-xs text-slate-600 space-y-2 bg-slate-50 border border-slate-200 rounded-2xl p-4">
-                <h5 className="font-bold uppercase tracking-wider text-slate-900">
-                  Bank Details for RTGS / NEFT:
-                </h5>
-                <div className="font-mono text-[11px] space-y-1 text-slate-800">
-                  <div>Account Name: <strong>SIDDHI ELECTRICALS</strong></div>
-                  <div>Bank Name: <strong>HDFC BANK LTD</strong></div>
-                  <div>Account Number: <strong>50200021488771</strong></div>
-                  <div>IFSC Code: <strong>HDFC0000053</strong></div>
-                  <div>Branch: <strong>S.P. Road, Bangalore</strong></div>
-                </div>
-                <div className="pt-2 text-[10px] text-slate-500">
-                  * Note: All cables supplied with manufacturer test certificates (VDE/UL/IS). Goods once sold subject to standard OEM terms.
-                </div>
-              </div>
 
-              {/* Total Calculation */}
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between text-slate-600">
-                  <span>Gross Material Value:</span>
-                  <span className="font-mono tabular-nums text-slate-900 font-bold">
-                    ₹{(subtotal + discountAmount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                  </span>
-                </div>
 
-                {discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-700 font-bold">
-                    <span>OEM Tier Volume Discount ({(discountRate * 100).toFixed(0)}%):</span>
-                    <span className="font-mono tabular-nums">
-                      -₹{discountAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex justify-between text-slate-800 font-bold">
-                  <span>Taxable Subtotal (Ex-GST):</span>
-                  <span className="font-mono font-black tabular-nums text-slate-950">
-                    ₹{subtotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                  </span>
-                </div>
-
-                {isInterstate ? (
-                  <div className="flex justify-between text-slate-600">
-                    <span>IGST (18% Integrated Tax):</span>
-                    <span className="font-mono tabular-nums text-slate-900 font-bold">
-                      ₹{gstAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex justify-between text-slate-600">
-                      <span>CGST (9% Central Tax):</span>
-                      <span className="font-mono tabular-nums text-slate-900 font-medium">
-                        ₹{(gstAmount / 2).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-slate-600">
-                      <span>SGST (9% Karnataka State Tax):</span>
-                      <span className="font-mono tabular-nums text-slate-900 font-medium">
-                        ₹{(gstAmount / 2).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                      </span>
-                    </div>
-                  </>
-                )}
-
-                <div className="flex justify-between text-slate-600">
-                  <span>Freight &amp; Transit Insurance:</span>
-                  <span className="font-mono text-slate-900 font-medium">TO PAY / EXTRA AT ACTUALS</span>
-                </div>
-
-                <div className="pt-3 border-t-2 border-zinc-900 flex justify-between text-sm sm:text-base font-black text-slate-950">
-                  <span>GRAND TOTAL (INCL. GST):</span>
-                  <span className="text-amber-600 font-mono tabular-nums text-lg font-black">
-                    ₹{grandTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                  </span>
-                </div>
-
-                <div className="text-[11px] text-slate-500 italic text-right pt-1 font-medium">
-                  Amount in words: Indian Rupees Only
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Signatures & Seal */}
-          <div className="pt-12 mt-8 border-t border-zinc-200 grid grid-cols-2 gap-8 text-xs text-slate-600">
-            <div>
-              <div className="h-14 flex items-end">
-                <div className="text-slate-400 font-mono text-[10px]">
-                  [Buyer PO Acceptance Stamp &amp; Signature]
-                </div>
-              </div>
-              <div className="border-t border-zinc-400 pt-1 font-bold text-slate-800">
-                Customer Acceptance
-              </div>
-            </div>
-
-            <div className="text-right">
-              <div className="h-14 flex items-end justify-end">
-                <div className="text-amber-800 font-mono font-bold text-xs uppercase bg-amber-50 px-2 py-0.5 border border-amber-200 rounded">
-                  Authorized Signatory · Siddhi Kabel
-                </div>
-              </div>
-              <div className="border-t border-zinc-400 pt-1 font-bold text-slate-900">
-                For SIDDHI KABEL / ELECTRICALS
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

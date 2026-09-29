@@ -169,13 +169,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Price & Primary Buy / Add to RFQ CTA */}
         <div className="pt-3 border-t border-slate-200/80 flex items-center justify-between gap-2 mt-auto min-w-0">
-          <div className="flex flex-col min-w-0 flex-1">
+          <div className="flex flex-col min-w-0 shrink-0">
             <span className="text-[9px] sm:text-[10px] uppercase font-mono text-slate-500 font-bold truncate">
-              Contract Rate
+              Price
             </span>
-            <div className="flex items-baseline gap-1 min-w-0">
-              <span className={`text-sm sm:text-base font-black ${style.priceText} font-mono tabular-nums truncate`}>
-                ₹{product.price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+            <div className="flex items-baseline gap-0.5 whitespace-nowrap">
+              <span className={`text-sm sm:text-base font-black ${style.priceText} font-mono tabular-nums`}>
+                ₹{product.price % 1 === 0 ? product.price.toLocaleString("en-IN") : product.price.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
               <span className="text-[10px] sm:text-xs text-slate-500 font-medium shrink-0">
                 /{product.unit}
@@ -200,7 +200,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             ) : (
               <>
                 <Plus className="w-3.5 h-3.5 shrink-0" />
-                <span>Add Quote</span>
+                <span>Request Quote</span>
               </>
             )}
           </button>

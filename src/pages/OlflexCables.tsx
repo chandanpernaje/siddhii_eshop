@@ -122,7 +122,7 @@ export const OlflexCables: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8 text-slate-900">
-      <div className="w-full space-y-8">
+      <div className="max-w-7xl mx-auto w-full space-y-8">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-xs text-slate-500">
           <Link to="/" className="hover:text-amber-600 transition-colors font-medium">
@@ -317,7 +317,7 @@ export const OlflexCables: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredProducts.slice(0, 100).map((cable) => {
+                {filteredProducts.map((cable) => {
                   const qty = quantities[cable.partNo] || 100;
                   const isInCart = cart.some((i) => i.id === `olflex-${cable.partNo}`);
 
@@ -326,17 +326,32 @@ export const OlflexCables: React.FC = () => {
                       key={cable.partNo}
                       className="hover:bg-slate-50/80 transition-colors group"
                     >
-                      <td className="py-3 px-4 font-mono font-bold text-amber-700 whitespace-nowrap">
+                      <td className="py-2.5 px-4 font-mono font-bold text-amber-700 whitespace-nowrap">
                         <Link
                           to={`/product-detail?id=${cable.partNo}`}
-                          className="hover:underline"
+                          className="flex items-center gap-3 group/item hover:underline"
+                          title={`Click to view product detail for Part #${cable.partNo}`}
                         >
-                          {cable.partNo}
+                          <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 p-1 flex items-center justify-center shrink-0 group-hover/item:border-amber-400 group-hover/item:shadow-sm transition-all overflow-hidden">
+                            <img
+                              src="/images/cable-olflex-cores.png"
+                              alt={cable.name}
+                              className="max-h-full max-w-full object-contain"
+                            />
+                          </div>
+                          <span className="font-mono text-amber-700 font-bold group-hover/item:text-amber-600">
+                            {cable.partNo}
+                          </span>
                         </Link>
                       </td>
 
                       <td className="py-3 px-4 text-slate-900 font-bold">
-                        <div className="line-clamp-1">{cable.name}</div>
+                        <Link
+                          to={`/product-detail?id=${cable.partNo}`}
+                          className="hover:text-amber-600 transition-colors"
+                        >
+                          <div className="line-clamp-1">{cable.name}</div>
+                        </Link>
                         <div className="text-[10px] text-slate-400 font-mono font-medium">
                           {cable.subCategory || "300/500V Flexible PVC Control"}
                         </div>

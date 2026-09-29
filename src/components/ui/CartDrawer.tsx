@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   X,
@@ -11,6 +11,7 @@ import {
   Percent,
 } from "lucide-react";
 import { useCart } from "../../context/CartContext";
+import { RFQModal } from "./RFQModal";
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -30,12 +31,12 @@ export const CartDrawer: React.FC = () => {
     discountAmount,
   } = useCart();
   const navigate = useNavigate();
+  const [isRfqModalOpen, setIsRfqModalOpen] = useState(false);
 
-  if (!isOpen) return null;
+  if (!isOpen && !isRfqModalOpen) return null;
 
   const handleProceedToQuotation = () => {
-    closeCart();
-    navigate("/quotation");
+    setIsRfqModalOpen(true);
   };
 
   return (
@@ -167,7 +168,7 @@ export const CartDrawer: React.FC = () => {
             )}
           </div>
 
-          {/* Drawer Footer & Financial Summary */}
+          {/* Drawer Footer & Action */}
           {cart.length > 0 && (
             <div className="border-t border-slate-200 bg-slate-50/80 p-6 space-y-4">
               <div className="space-y-1.5 text-xs">
@@ -212,14 +213,14 @@ export const CartDrawer: React.FC = () => {
                   onClick={handleProceedToQuotation}
                   className="w-full py-3.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 active:scale-98 transition-all"
                 >
-                  <span>Generate Official GST Quotation</span>
+                  <span>Proceed to RFQ Form</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
                 <div className="flex items-center justify-between text-[11px] text-slate-500 px-1 font-medium">
                   <div className="flex items-center gap-1.5 text-emerald-700">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>Instant Proforma PDF Ready</span>
+                    <span>Request Bulk Quotation</span>
                   </div>
                   <button
                     onClick={clearCart}
@@ -233,6 +234,12 @@ export const CartDrawer: React.FC = () => {
           )}
         </div>
       </div>
+
+      <RFQModal 
+        productName="Bulk Project Bill of Materials"
+        isOpen={isRfqModalOpen}
+        onClose={() => setIsRfqModalOpen(false)}
+      />
     </div>
   );
 };

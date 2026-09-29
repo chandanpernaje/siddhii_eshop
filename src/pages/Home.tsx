@@ -3,7 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import {
   ChevronLeft,
   ChevronRight,
-  ShieldCheck,
+  ChevronUp,
+  ChevronDown,
   CheckCircle2,
   FileSpreadsheet,
   ArrowRight,
@@ -40,16 +41,17 @@ export const Home: React.FC = () => {
 
   // Catalog Filtering State
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedBrand, setSelectedBrand] = useState("all");
+  const [selectedBrand, setSelectedBrand] = useState("lapp");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc" | "name">("featured");
-  const [showCatalog, setShowCatalog] = useState(false);
+  const [showCatalog, setShowCatalog] = useState(true);
 
   // Modals
   const [brandModal, setBrandModal] = useState<string | null>(null);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [rfqModalOpen, setRfqModalOpen] = useState(false);
   const [rfqProductName, setRfqProductName] = useState<string | null>(null);
+  const [rfqProductPrice, setRfqProductPrice] = useState<number | null>(null);
 
   // RFQ Form Section State
   const [rfqCompany, setRfqCompany] = useState(user?.company || "");
@@ -118,7 +120,7 @@ export const Home: React.FC = () => {
       img: "/images/promo-lapp.jpg",
       badge: "VDE REG. NO. 7030",
       ctaText: "Open ÖLFLEX® Center",
-      ctaLink: "/olflex-cables",
+      ctaLink: "/about-lapp",
       productSampleId: "lapp-01",
       bgClass: "bg-gradient-to-r from-zinc-950 via-slate-900 to-amber-950/80 border-amber-500/30",
       pillClass: "bg-amber-500/20 text-amber-300 border-amber-500/40",
@@ -150,7 +152,7 @@ export const Home: React.FC = () => {
       tagline: "Industrial CEE Pin & Sleeve Standards",
       headline: "Watertight IP44 & IP67 Plugs & Sockets",
       description:
-        "Engineered with nickel-plated brass contacts and impact-resistant Polyamide 6 housings. Bulk factory OEM box pricing for major machine builders and site installations.",
+        "Manufactured using robust Polyamide 6 material and premium nickel-plated contacts for ultimate durability. We offer exclusive factory box rates tailored for machine builders and large-scale industrial projects.",
       img: "/images/promo-mennekes.jpg",
       badge: "OEM BOX RATES",
       ctaText: "Explore Mennekes",
@@ -186,7 +188,7 @@ export const Home: React.FC = () => {
     let result = [...PRODUCTS_DATA];
 
     if (selectedCategory !== "all") {
-      result = result.filter((p) => p.category === selectedCategory);
+      result = result.filter((p) => p.category === selectedCategory || p.id === selectedCategory);
     }
 
     if (selectedBrand !== "all") {
@@ -332,9 +334,9 @@ export const Home: React.FC = () => {
       {/* ======================================================== */}
       {/* HERO BANNER CAROUSEL SLIDER                               */}
       {/* ======================================================== */}
-      <section className="w-full text-slate-900">
-        <div className="w-full relative">
-          <div className="relative w-full overflow-hidden shadow-2xl">
+      <section className="w-full text-slate-900 bg-slate-950 border-b border-slate-800 shadow-2xl relative overflow-hidden">
+        <div className="w-full relative max-w-7xl mx-auto">
+          <div className="relative">
             {slides.map((slide, idx) => {
               const isActive = idx === currentSlide;
               if (!isActive) return null;
@@ -342,89 +344,73 @@ export const Home: React.FC = () => {
               return (
                 <div
                   key={slide.brand}
-                  className={`w-full ${slide.bgClass} px-6 sm:px-10 lg:px-16 py-10 sm:py-14 lg:py-20 text-white relative overflow-hidden transition-all duration-500 min-h-[480px] flex items-center`}
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-6 sm:p-10 md:p-12 min-h-[460px] md:min-h-[500px] relative z-10 animate-in fade-in duration-500"
                 >
-                  {/* Subtle background glow */}
-                  <div
-                    aria-hidden="true"
-                    className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/5 blur-3xl pointer-events-none"
-                  />
-
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full z-10">
-                    <div className="lg:col-span-7 space-y-4 sm:space-y-6">
-                      {/* Top Row: Brand Logo, Origin & Badge */}
-                      <div className="flex flex-wrap items-center gap-3">
-                        <div className="bg-white p-2 rounded-xl border border-white/20 shadow-xs h-10 flex items-center justify-center max-w-[120px]">
-                          <img
-                            src={slide.logo}
-                            alt={slide.brand}
-                            className="max-h-6 w-auto object-contain"
-                          />
-                        </div>
-                        <span className={`text-[11px] font-mono font-bold uppercase px-3 py-1 rounded-full border ${slide.pillClass}`}>
-                          {slide.origin} · {slide.badge}
-                        </span>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="text-xs sm:text-sm font-mono uppercase tracking-wider text-amber-400 font-bold">
-                          {slide.tagline}
-                        </div>
-                        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
-                          {slide.headline}
-                        </h1>
-                      </div>
-
-                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl font-medium">
-                        {slide.description}
-                      </p>
-
-                      <div className="pt-2 flex flex-wrap items-center gap-4">
-                        <Link
-                          to={slide.ctaLink}
-                          className={`px-6 py-3 font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center gap-2 shadow-lg ${slide.btnClass}`}
-                        >
-                          <span>{slide.ctaText}</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </Link>
-
-                        <button
-                          onClick={() => {
-                            const brandId = slide.brand.toLowerCase().includes("lapp")
-                              ? "lapp"
-                              : slide.brand.toLowerCase().includes("eaton")
-                              ? "eaton"
-                              : slide.brand.toLowerCase().includes("mennekes")
-                              ? "mennekes"
-                              : "partex";
-                            setSelectedBrand(brandId);
-                            setSelectedCategory("all");
-                            setShowCatalog(true);
-                            setTimeout(() => {
-                              const catEl = document.getElementById("catalog");
-                              if (catEl) catEl.scrollIntoView({ behavior: "smooth" });
-                            }, 100);
-                          }}
-                          className="px-5 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs rounded-xl transition-colors backdrop-blur-xs flex items-center gap-2 cursor-pointer"
-                        >
-                          <span>Explore {slide.brand.split(" ")[0]} Catalog</span>
-                          <Zap className="w-3.5 h-3.5 text-amber-400" />
-                        </button>
+                  {/* Left Side — Text Container */}
+                  <div className="lg:col-span-7 flex flex-col justify-center space-y-5 z-10">
+                    {/* Brand Logo & Country Origin Pill */}
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <div className="bg-white px-3 py-1.5 rounded-xl flex items-center shadow-md h-10">
+                        <img src={slide.logo} alt={slide.brand} className="h-6 sm:h-7 object-contain" />
                       </div>
                     </div>
 
-                    {/* Right Column: Hero Image Preview */}
-                    <div className="lg:col-span-5 flex items-center justify-center">
-                      <div className="relative w-full flex items-center justify-center group">
-                        <img
-                          src={slide.img}
-                          alt={slide.headline}
-                          className="max-h-52 sm:max-h-60 w-auto object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
-                        />
-                        <div className="absolute bottom-0 left-4 right-4 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-[11px] font-mono text-amber-300 font-bold flex justify-between items-center">
-                          <span>{slide.brand}</span>
-                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                        </div>
+                    {/* Subtitle / Eyebrow Text */}
+                    <span className="text-amber-400 font-extrabold text-xs tracking-widest uppercase">
+                      {slide.tagline}
+                    </span>
+
+                    {/* Main Heading */}
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+                      {slide.headline}
+                    </h1>
+
+                    {/* Description Paragraph */}
+                    <p className="text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
+                      {slide.description}
+                    </p>
+
+                    {/* CTA Buttons Group */}
+                    <div className="flex flex-wrap items-center gap-4 pt-2">
+                      <Link
+                        to={slide.ctaLink}
+                        className={`px-6 py-3 font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center gap-2 shadow-lg ${slide.btnClass}`}
+                      >
+                        <span>{slide.ctaText}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+
+                      <button
+                        onClick={() => {
+                          const brandId = slide.brand.toLowerCase().includes("lapp")
+                            ? "lapp"
+                            : slide.brand.toLowerCase().includes("eaton")
+                            ? "eaton"
+                            : slide.brand.toLowerCase().includes("mennekes")
+                            ? "mennekes"
+                            : "partex";
+                          setSelectedBrand(brandId);
+                          setSelectedCategory("all");
+                          setShowCatalog(true);
+                          setTimeout(() => {
+                            const catEl = document.getElementById("catalog");
+                            if (catEl) catEl.scrollIntoView({ behavior: "smooth" });
+                          }, 100);
+                        }}
+                        className="px-5 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs rounded-xl transition-colors backdrop-blur-md flex items-center gap-2 cursor-pointer shadow-lg"
+                      >
+                        <span>Explore {slide.brand.split(" ")[0]} Catalog ⚡</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Right Side — Image / Media Container */}
+                  <div className="lg:col-span-5 relative flex justify-center items-center z-10 w-full mt-6 lg:mt-0">
+                    <div className={`relative w-full max-w-md aspect-[4/3] rounded-2xl overflow-hidden border ${slide.cardBorder} shadow-2xl bg-slate-900/80 group`}>
+                      <img src={slide.img} alt={slide.brand} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                      <div className="absolute bottom-0 inset-x-0 bg-slate-950/80 backdrop-blur-md p-3 px-4 border-t border-white/10 flex justify-between items-center text-xs font-semibold text-slate-300">
+                        <span>{slide.brand}</span>
+                        <Zap className="w-4 h-4 text-emerald-400" />
                       </div>
                     </div>
                   </div>
@@ -432,24 +418,24 @@ export const Home: React.FC = () => {
               );
             })}
 
-            {/* Carousel Arrows */}
+            {/* Navigation Arrows */}
             <button
               onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-950/60 hover:bg-slate-950/90 text-white border border-white/20 flex items-center justify-center transition-all z-20 cursor-pointer shadow-lg backdrop-blur-xs"
               aria-label="Previous Slide"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-950/60 hover:bg-slate-950/90 text-white border border-white/20 flex items-center justify-center transition-all z-20 cursor-pointer shadow-lg backdrop-blur-md hidden sm:flex"
             >
-              <ChevronLeft className="w-5 h-5" />
+              ‹
             </button>
             <button
               onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-950/60 hover:bg-slate-950/90 text-white border border-white/20 flex items-center justify-center transition-all z-20 cursor-pointer shadow-lg backdrop-blur-xs"
               aria-label="Next Slide"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-950/60 hover:bg-slate-950/90 text-white border border-white/20 flex items-center justify-center transition-all z-20 cursor-pointer shadow-lg backdrop-blur-md hidden sm:flex"
             >
-              <ChevronRight className="w-5 h-5" />
+              ›
             </button>
 
             {/* Carousel Indicator Dots */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20 bg-slate-950/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20 bg-slate-950/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
@@ -470,34 +456,14 @@ export const Home: React.FC = () => {
       {/* ======================================================== */}
       {/* 1. AUTHORIZED BRAND PORTFOLIOS: 4 BRAND CARDS & INLINE CATALOG */}
       {/* ======================================================== */}
-      <section id="brand-portfolios" className="w-full bg-white border-t border-b border-slate-200 scroll-mt-24 py-12 lg:py-16 text-slate-900">
-        <div className="w-full px-4 lg:px-8 space-y-8">
+      <section id="brand-portfolios" className="w-full scroll-mt-24 pt-12 lg:pt-16 pb-8 lg:pb-12 bg-white border-y border-slate-200 text-slate-900 shadow-sm">
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 space-y-8">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-1">
             <div>
-              <div className="text-xs font-mono uppercase tracking-wider text-amber-700 font-bold">
-                Direct OEM Channels
-              </div>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
                 Authorized Brand Portfolios
               </h2>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <Link
-                to="/olflex-cables"
-                className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-md shadow-orange-500/20"
-              >
-                <span>ÖLFLEX® Configurator (100+ Specs)</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-              <Link
-                to="/quotation"
-                className="px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-xs"
-              >
-                <FileSpreadsheet className="w-3.5 h-3.5 text-amber-500" />
-                <span>Commercial Quote Sheet</span>
-              </Link>
             </div>
           </div>
 
@@ -511,8 +477,6 @@ export const Home: React.FC = () => {
                 badge: "bg-slate-100 text-slate-700",
                 text: "text-amber-600",
               };
-              const isOpen = brandModal === b.id;
-
               return (
                 <div
                   key={b.id}
@@ -522,9 +486,7 @@ export const Home: React.FC = () => {
                     setShowCatalog(true);
                     setTimeout(() => {
                       const el = document.getElementById("catalog");
-                      if (el) {
-                        el.scrollIntoView({ behavior: "smooth", block: "start" });
-                      }
+                      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                     }, 150);
                   }}
                   className={`rounded-2xl ${style.bg} ${style.border} ${style.strip} p-6 sm:p-7 flex flex-col justify-between space-y-5 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer group hover:-translate-y-2 min-h-[260px] lg:min-h-[290px] w-full ${
@@ -532,21 +494,14 @@ export const Home: React.FC = () => {
                   }`}
                 >
                   <div className="space-y-4">
-                    {/* Top Row: Logo & Origin Badge */}
                     <div className="flex items-center justify-between gap-2">
                       <div className="bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs h-14 flex items-center justify-center max-w-[140px] shrink-0">
-                        <img
-                          src={b.logo}
-                          alt={b.name}
-                          className="max-h-8 w-auto object-contain"
-                        />
+                        <img src={b.logo} alt={b.name} className="max-h-8 w-auto object-contain" />
                       </div>
                       <span className={`text-[11px] font-mono uppercase px-2.5 py-1 rounded-md font-bold ${style.badge}`}>
                         {b.origin}
                       </span>
                     </div>
-
-                    {/* Brand Title & Description */}
                     <div>
                       <h3 className="text-lg font-black text-slate-900 tracking-tight group-hover:text-amber-600 transition-colors">
                         {b.name}
@@ -556,8 +511,6 @@ export const Home: React.FC = () => {
                       </p>
                     </div>
                   </div>
-
-                  {/* Explore Catalog CTA */}
                   <div className={`pt-4 border-t border-slate-200/70 flex items-center justify-between text-xs sm:text-sm font-bold ${style.text}`}>
                     <span>Explore {b.name.split(" ")[0]} Catalog</span>
                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1.5 transition-transform" />
@@ -567,30 +520,40 @@ export const Home: React.FC = () => {
             })}
           </div>
 
-          {/* Inline Product Catalog Display - Appears directly inside this same section below cards */}
+          {/* Inline Product Catalog */}
           {showCatalog && (
-            <div id="catalog" className="w-full pt-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 border-t border-slate-200">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-6">
-                <div className="space-y-2">
+            <div id="catalog" className={`w-full mt-4 pt-6 pb-8 px-4 sm:px-6 lg:px-8 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-white rounded-r-2xl rounded-bl-2xl shadow-lg border-l-4 border-t-4 relative ${
+              selectedBrand === 'lapp' ? 'border-amber-500 bg-amber-50/20' :
+              selectedBrand === 'eaton' ? 'border-blue-500 bg-blue-50/20' :
+              selectedBrand === 'mennekes' ? 'border-rose-500 bg-rose-50/20' :
+              selectedBrand === 'partex' ? 'border-emerald-500 bg-emerald-50/20' :
+              'border-slate-200'
+            }`}>
+              {/* Caret pointing to selected brand (visible mainly on lg screens where they are in 1 row) */}
+              {selectedBrand !== 'all' && (
+                <div className={`absolute -top-4 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[16px] hidden lg:block ${
+                  selectedBrand === 'lapp' ? 'left-[12.5%] border-b-amber-500' :
+                  selectedBrand === 'eaton' ? 'left-[37.5%] border-b-blue-500' :
+                  selectedBrand === 'partex' ? 'left-[62.5%] border-b-emerald-500' :
+                  selectedBrand === 'mennekes' ? 'left-[87.5%] border-b-rose-500' : ''
+                }`} style={{ transform: 'translateX(-50%)' }} />
+              )}
+              
+              <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-6 border-b border-slate-200 pb-6">
+                {/* Header Side */}
+                <div className="space-y-2 flex-1">
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => {
-                        setShowCatalog(false);
-                        setSelectedBrand("all");
-                        setSelectedCategory("all");
-                        setSearchQuery("");
-                      }}
-                      className="px-3.5 py-1.5 bg-slate-100 hover:bg-amber-100 border border-slate-300 hover:border-amber-400 text-slate-800 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
-                    >
-                      <span>← Close Catalog</span>
-                    </button>
                     {selectedBrand !== "all" && (
-                      <span className="text-xs font-mono uppercase px-2.5 py-1 rounded-lg bg-amber-500 text-white font-bold">
+                      <span className={`text-xs font-mono uppercase px-2.5 py-1 rounded-lg text-white font-bold ${
+                        selectedBrand === 'lapp' ? 'bg-amber-500' :
+                        selectedBrand === 'eaton' ? 'bg-blue-500' :
+                        selectedBrand === 'mennekes' ? 'bg-rose-500' :
+                        selectedBrand === 'partex' ? 'bg-emerald-500' : 'bg-slate-500'
+                      }`}>
                         {BRANDS.find((b) => b.id === selectedBrand)?.name || selectedBrand.toUpperCase()}
                       </span>
                     )}
                   </div>
-
                   <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                     {selectedBrand !== "all"
                       ? `${BRANDS.find((b) => b.id === selectedBrand)?.name || selectedBrand.toUpperCase()} Product Catalog`
@@ -598,93 +561,68 @@ export const Home: React.FC = () => {
                   </h3>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Link
-                    to="/olflex-cables"
-                    className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-md shadow-orange-500/20"
-                  >
-                    <span>ÖLFLEX® Configurator (100+ Specs)</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                  <Link
-                    to="/quotation"
-                    className="px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-xs"
-                  >
-                    <FileSpreadsheet className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Commercial Quote Sheet</span>
-                  </Link>
-                </div>
-              </div>
-
-              {/* Filter Bar */}
-              <div className="space-y-4">
-                {/* Search, Brand dropdown, Sorter */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
-                  <div className="relative sm:col-span-2">
+                {/* Filters Side (Right Aligned) */}
+                <div className="flex flex-col sm:flex-row items-center gap-3 text-xs w-full xl:w-auto shrink-0">
+                  <div className="relative w-full sm:w-64 lg:w-80">
                     <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                     <input
                       type="text"
-                      placeholder="Filter by part number, core size, voltage, or brand..."
+                      placeholder={selectedBrand !== "all" 
+                        ? `Search part number or description across ${BRANDS.find((b) => b.id === selectedBrand)?.name?.split(' ')[0] || selectedBrand.toUpperCase()}...`
+                        : "Search part number or description..."}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-white border border-slate-300 rounded-xl pl-10 pr-3 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 shadow-xs font-medium"
+                      className={`w-full bg-white border rounded-xl pl-10 pr-3 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none shadow-xs font-medium ${
+                        selectedBrand === 'lapp' ? 'border-amber-200 focus:border-amber-500' :
+                        selectedBrand === 'eaton' ? 'border-blue-200 focus:border-blue-500' :
+                        selectedBrand === 'mennekes' ? 'border-rose-200 focus:border-rose-500' :
+                        selectedBrand === 'partex' ? 'border-emerald-200 focus:border-emerald-500' : 'border-slate-300 focus:border-amber-500'
+                      }`}
                     />
                   </div>
 
-                  <div>
+                  {selectedBrand !== "all" && (
                     <select
-                      value={selectedBrand}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "all") {
-                          setShowCatalog(false);
-                          setSelectedBrand("all");
-                          setSelectedCategory("all");
-                        } else {
-                          setSelectedBrand(val);
-                          setSelectedCategory("all");
-                        }
-                      }}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-amber-500 shadow-xs font-semibold"
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className={`w-full sm:w-auto max-w-[200px] truncate bg-white border rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none shadow-xs font-semibold ${
+                        selectedBrand === 'lapp' ? 'border-amber-200 focus:border-amber-500' :
+                        selectedBrand === 'eaton' ? 'border-blue-200 focus:border-blue-500' :
+                        selectedBrand === 'mennekes' ? 'border-rose-200 focus:border-rose-500' :
+                        selectedBrand === 'partex' ? 'border-emerald-200 focus:border-emerald-500' : 'border-slate-300 focus:border-amber-500'
+                      }`}
                     >
-                      <option value="lapp">LAPP KABEL</option>
-                      <option value="eaton">EATON - MOELLER</option>
-                      <option value="partex">PARTEX SWEDEN</option>
-                      <option value="mennekes">MENNEKES</option>
-                      <option value="havells">HAVELLS</option>
-                      <option value="hager">HAGER</option>
-                      <option value="neptune">NEPTUNE</option>
-                      <option value="jef">JEF ECO SAFE</option>
-                      <option value="all">← Close Catalog</option>
+                      <option value="all">All {BRANDS.find((b) => b.id === selectedBrand)?.name.split(' ')[0] || ""} Products</option>
+                      {PRODUCTS_DATA.filter(p => p.brand.toLowerCase().includes(selectedBrand.toLowerCase())).map(p => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                      ))}
                     </select>
-                  </div>
-
-                  <div>
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value as any)}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-amber-500 shadow-xs font-semibold"
-                    >
-                      <option value="featured">Sort: Featured OEM</option>
-                      <option value="price-asc">Price: Low to High</option>
-                      <option value="price-desc">Price: High to Low</option>
-                      <option value="name">Product Name (A-Z)</option>
-                    </select>
-                  </div>
+                  )}
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as any)}
+                    className={`w-full sm:w-auto bg-white border rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none shadow-xs font-semibold ${
+                      selectedBrand === 'lapp' ? 'border-amber-200 focus:border-amber-500' :
+                      selectedBrand === 'eaton' ? 'border-blue-200 focus:border-blue-500' :
+                      selectedBrand === 'mennekes' ? 'border-rose-200 focus:border-rose-500' :
+                      selectedBrand === 'partex' ? 'border-emerald-200 focus:border-emerald-500' : 'border-slate-300 focus:border-amber-500'
+                    }`}
+                  >
+                    <option value="featured">Sort: Featured OEM</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="name">Product Name (A-Z)</option>
+                  </select>
                 </div>
               </div>
 
-              {/* Product Cards Grid with custom brand borders */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
                 {filteredProducts.map((product) => (
                   <ProductCard
                     key={product.id}
                     product={product}
                     onQuickView={(p) => setQuickViewProduct(p)}
-                    onDirectQuote={(p) => {
-                      setRfqProductName(`${p.name} (${p.partNo})`);
-                      setRfqModalOpen(true);
-                    }}
+                    onDirectQuote={(p) => { setRfqProductName(`${p.name} (${p.partNo})`); setRfqProductPrice(p.price); setRfqModalOpen(true); }}
                   />
                 ))}
               </div>
@@ -693,11 +631,7 @@ export const Home: React.FC = () => {
                 <div className="text-center py-16 border border-slate-200 rounded-2xl bg-white text-slate-500 text-xs space-y-2">
                   <p>No products matched your active filters.</p>
                   <button
-                    onClick={() => {
-                      setSelectedCategory("all");
-                      setSelectedBrand("all");
-                      setSearchQuery("");
-                    }}
+                    onClick={() => { setSelectedCategory("all"); setSelectedBrand("all"); setSearchQuery(""); }}
                     className="text-amber-600 underline font-bold"
                   >
                     Clear all filters
@@ -717,8 +651,9 @@ export const Home: React.FC = () => {
       {/* ======================================================== */}
       {/* 5. RFQ & BULK QUOTATION FORM: CLEAN WHITE PANEL          */}
       {/* ======================================================== */}
-      <section id="rfq" className="w-full bg-white border-t border-b border-slate-200 scroll-mt-24 py-12 lg:py-16 text-slate-900 relative overflow-hidden">
-        <div className="w-full px-4 lg:px-8 relative z-10">
+      <section id="rfq" className="w-full bg-white scroll-mt-24 pt-6 lg:pt-8 pb-6 lg:pb-8 text-slate-900 relative">
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="rounded-3xl bg-white border border-slate-200 shadow-xl p-6 sm:p-10 lg:p-12 relative overflow-hidden">
           {/* Subtle amber background glow */}
           <div aria-hidden="true" className="absolute top-0 right-0 w-96 h-96 rounded-full bg-amber-500/5 blur-3xl pointer-events-none" />
 
@@ -825,19 +760,6 @@ export const Home: React.FC = () => {
 
                 <div>
                   <label className="block text-slate-800 font-bold mb-1">
-                    Buyer GSTIN (For ITC 18%)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="29AABCU9603R1ZM"
-                    value={rfqGstin}
-                    onChange={(e) => setRfqGstin(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white font-mono uppercase font-bold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-800 font-bold mb-1">
                     Delivery Site City *
                   </label>
                   <input
@@ -847,6 +769,20 @@ export const Home: React.FC = () => {
                     value={rfqCity}
                     onChange={(e) => setRfqCity(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-800 font-bold mb-1">
+                    Buyer GSTIN (for ITC 18%)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="29ABCDE1234F1Z5"
+                    value={rfqGstin}
+                    onChange={(e) => setRfqGstin(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white font-mono uppercase"
+                    maxLength={15}
                   />
                 </div>
               </div>
@@ -865,7 +801,6 @@ export const Home: React.FC = () => {
                     <option value="eaton">EATON Moeller Switchgear &amp; Starters</option>
                     <option value="mennekes">MENNEKES CEE Industrial Plugs</option>
                     <option value="partex">PARTEX Sweden Marking Systems</option>
-                    <option value="mixed">Complete Project BOM / Mixed Schedule</option>
                   </select>
                 </div>
 
@@ -939,97 +874,54 @@ export const Home: React.FC = () => {
               </div>
             </form>
           )}
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 6. TRUST METRICS: VIBRANT COLORED STAT CARDS             */}
-      {/* ======================================================== */}
-      <section className="w-full px-4 lg:px-8">
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Card 1: Amber / Ready stock */}
-          <div className="rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-100/80 to-orange-100/90 border border-amber-300 border-t-4 border-t-amber-500 p-5 sm:p-6 space-y-2 shadow-md hover:shadow-xl hover:shadow-amber-500/20 transition-all duration-300 hover:-translate-y-1 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center font-bold mb-2">
-              <Zap className="w-5 h-5 text-amber-700" />
-            </div>
-            <span className="text-2xl sm:text-3xl font-black font-mono text-amber-950 break-words block">
-              25,000m+
-            </span>
-            <h4 className="text-sm font-bold text-slate-900 break-words">Ready Stock Inventory</h4>
-            <p className="text-xs text-slate-700 leading-relaxed font-medium break-words hyphens-auto">
-              Maintained in Bangalore central depot across ÖLFLEX® cables, CEE plugs, and motor breakers.
-            </p>
-          </div>
-
-          {/* Card 2: Blue / OEM Genuine */}
-          <div className="rounded-2xl bg-gradient-to-br from-blue-500/20 via-blue-100/80 to-sky-100/90 border border-blue-300 border-t-4 border-t-blue-500 p-5 sm:p-6 space-y-2 shadow-md hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300 hover:-translate-y-1 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-700 flex items-center justify-center font-bold mb-2">
-              <Award className="w-5 h-5 text-blue-700" />
-            </div>
-            <span className="text-2xl sm:text-3xl font-black font-mono text-blue-950 break-words block">
-              100% OEM
-            </span>
-            <h4 className="text-sm font-bold text-slate-900 break-words">Genuine Certification</h4>
-            <p className="text-xs text-slate-700 leading-relaxed font-medium break-words hyphens-auto">
-              Direct factory warranty with manufacturer batch test reports (VDE, UL, CSA, CE, RoHS).
-            </p>
-          </div>
-
-          {/* Card 3: Emerald / Rapid Dispatch */}
-          <div className="rounded-2xl bg-gradient-to-br from-emerald-500/20 via-emerald-100/80 to-teal-100/90 border border-emerald-300 border-t-4 border-t-emerald-500 p-5 sm:p-6 space-y-2 shadow-md hover:shadow-xl hover:shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-1 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-700 flex items-center justify-center font-bold mb-2">
-              <Truck className="w-5 h-5 text-emerald-700" />
-            </div>
-            <span className="text-2xl sm:text-3xl font-black font-mono text-emerald-950 break-words block">
-              24-48 Hrs
-            </span>
-            <h4 className="text-sm font-bold text-slate-900 break-words">Dispatch Lead Time</h4>
-            <p className="text-xs text-slate-700 leading-relaxed font-medium break-words hyphens-auto">
-              Immediate same-day or next-day dispatch for Peenya, Bommasandra, Hosur, and South-India sites.
-            </p>
-          </div>
-
-          {/* Card 4: Purple / Corporate Clients */}
-          <div className="rounded-2xl bg-gradient-to-br from-purple-500/20 via-purple-100/80 to-indigo-100/90 border border-purple-300 border-t-4 border-t-purple-500 p-5 sm:p-6 space-y-2 shadow-md hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-300 hover:-translate-y-1 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-700 flex items-center justify-center font-bold mb-2">
-              <Users className="w-5 h-5 text-purple-700" />
-            </div>
-            <span className="text-2xl sm:text-3xl font-black font-mono text-purple-950 break-words block">
-              1,200+
-            </span>
-            <h4 className="text-sm font-bold text-slate-900 break-words">Corporate Clients</h4>
-            <p className="text-xs text-slate-700 leading-relaxed font-medium break-words hyphens-auto">
-              Trusted by automation OEMs, panel builders, switchgear fabricators, and infrastructure leaders.
-            </p>
           </div>
         </div>
       </section>
+
 
       {/* ======================================================== */}
       {/* 7. ABOUT COMPANY SECTION                                 */}
       {/* ======================================================== */}
-      <section id="about" className="w-full bg-white border-t border-b border-slate-200 scroll-mt-24 py-12 lg:py-16 text-slate-900">
-        <div className="w-full px-4 lg:px-8 space-y-8">
-          <div className="max-w-3xl space-y-3">
-            <div className="text-xs font-mono uppercase tracking-wider text-amber-700 font-bold">
-              Company Profile
+      <section id="about" className="w-full scroll-mt-24 pt-8 lg:pt-12 pb-12 lg:pb-16 bg-white border-b border-slate-200 text-slate-900 shadow-sm">
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Text Content */}
+            <div className="space-y-4">
+              <div className="text-xs font-mono uppercase tracking-wider text-amber-700 font-bold">
+                Company Profile
+              </div>
+              <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                Siddhi Kabel Corporation Private Limited
+              </h2>
+              <div className="space-y-3 text-sm sm:text-base text-slate-700 leading-relaxed font-medium">
+                <p>
+                  Siddhi Kabel Corporation Private Limited is one of the leading and reliable suppliers of world class Industrial Electrical, Automation & Safety Products.
+                </p>
+                <p>
+                  We at Siddhi Kabel specialize in providing solutions for high quality industrial products. Our primary focus is to service the needs of our customers for high quality products and services, with more than 15 years of experience in industrial Electrical field and association with leading national and multinational customers & Suppliers, Siddhi Kabel offers superior quality products coupled with best technical support.
+                </p>
+              </div>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              Siddhi Electricals &amp; Cables
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-              Established as one of South India's premier authorized distributors for high-reliability industrial automation components, power cables, and motor control switchgear. Based in the heart of Bangalore's electrical trade corridor, we bridge European engineering excellence with instant on-the-ground availability.
-            </p>
+
+            {/* Image Content */}
+            <div className="relative w-full rounded-2xl overflow-hidden shadow-xl border border-slate-200 group bg-slate-50 flex items-center justify-center">
+              <div className="absolute inset-0 bg-slate-900/5 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none" />
+              <img 
+                src="/images/company-profile.jpg" 
+                alt="Industrial Automation and Robotics - Siddhi Kabel" 
+                className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-700 ease-out"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-200/80 text-xs">
             <div className="space-y-2 p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-50/60 to-white border border-amber-200 shadow-xs">
               <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-amber-500" />
-                <span>Industrial Expertise</span>
+                <span>15+ Years Experience</span>
               </h4>
               <p className="text-slate-600 leading-relaxed font-medium">
-                Over two decades of technical experience in helping panel builders, automation engineers, and machine tool manufacturers select the exact cable and switchgear specifications for demanding applications.
+                More than 15 years of technical experience in the industrial electrical field, serving leading national and multinational customers & suppliers with best technical support.
               </p>
             </div>
 
@@ -1052,138 +944,55 @@ export const Home: React.FC = () => {
                 Full 18% GST Input Tax Credit (ITC) compliance, formal commercial quotations with price firm commitments, and structured credit facilities for verified industrial corporate accounts.
               </p>
             </div>
+            </div>
+            {/* 4 Trust Metrics Cards */}
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8 border-t border-slate-200/80">
+          {/* Card 1: Amber / Ready stock */}
+          <div className="space-y-2 p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-50/60 to-white border border-amber-200 shadow-xs">
+            <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <Zap className="w-4 h-4 text-amber-500" />
+              <span>25,000m+ Ready Stock</span>
+            </h4>
+            <p className="text-slate-600 leading-relaxed font-medium text-xs">
+              Maintained in Bangalore central depot across ÖLFLEX® cables, CEE plugs, and motor breakers.
+            </p>
+          </div>
+
+          {/* Card 2: Blue / OEM Genuine */}
+          <div className="space-y-2 p-5 rounded-2xl bg-gradient-to-br from-blue-500/10 via-sky-50/60 to-white border border-blue-200 shadow-xs">
+            <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <Award className="w-4 h-4 text-blue-500" />
+              <span>100% OEM Genuine</span>
+            </h4>
+            <p className="text-slate-600 leading-relaxed font-medium text-xs">
+              Direct factory warranty with manufacturer batch test reports (VDE, UL, CSA, CE, RoHS).
+            </p>
+          </div>
+
+          {/* Card 3: Emerald / Rapid Dispatch */}
+          <div className="space-y-2 p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-emerald-50/60 to-white border border-emerald-200 shadow-xs">
+            <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <Truck className="w-4 h-4 text-emerald-500" />
+              <span>24-48 Hrs Dispatch</span>
+            </h4>
+            <p className="text-slate-600 leading-relaxed font-medium text-xs">
+              Immediate same-day or next-day dispatch for Peenya, Bommasandra, Hosur, and South-India sites.
+            </p>
+          </div>
+
+          {/* Card 4: Purple / Corporate Clients */}
+          <div className="space-y-2 p-5 rounded-2xl bg-gradient-to-br from-purple-500/10 via-purple-50/60 to-white border border-purple-200 shadow-xs">
+            <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <Users className="w-4 h-4 text-purple-500" />
+              <span>1,200+ Corporate Clients</span>
+            </h4>
+            <p className="text-slate-600 leading-relaxed font-medium text-xs">
+              Trusted by automation OEMs, panel builders, switchgear fabricators, and infrastructure leaders.
+            </p>
+          </div>
           </div>
         </div>
       </section>
-
-      {/* ======================================================== */}
-      {/* 8. CONTACT & WAREHOUSE DISPATCH SECTION                  */}
-      {/* ======================================================== */}
-      {/* ======================================================== */}
-      {/* 8. CONTACT & WAREHOUSE DISPATCH SECTION                  */}
-      {/* ======================================================== */}
-      <section id="contact" className="w-full bg-white border-t border-b border-slate-200 scroll-mt-24 py-12 lg:py-16 text-slate-900">
-        <div className="w-full px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
-            {/* Contact Details */}
-            <div className="lg:col-span-6 flex flex-col justify-between space-y-6">
-              <div>
-                <div className="text-xs font-mono uppercase tracking-wider text-amber-700 mb-1 font-bold">
-                  Bangalore Headquarters
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                  Direct Sales &amp; Dispatch Desk
-                </h2>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed font-medium">
-                  Connect directly with our technical engineers for cable sizing assistance, factory certificates, or immediate dispatch pickups.
-                </p>
-              </div>
-
-              <div className="space-y-4 text-xs">
-                <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-500/15 via-amber-50/70 to-white border border-amber-300 shadow-xs">
-                  <MapPin className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-amber-800 block font-mono text-[11px] mb-0.5 font-bold uppercase">
-                      Main Showroom &amp; Trade Counter
-                    </span>
-                    <span className="text-slate-900 font-black text-sm">
-                      Siddhi Electricals &amp; Cables
-                    </span>
-                    <p className="text-slate-700 mt-1 leading-relaxed font-medium">
-                      No. 12/3, S.P. Road Cross, Bangalore - 560002, Karnataka, India
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-blue-500/15 via-sky-50/70 to-white border border-blue-300 shadow-xs">
-                  <Phone className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-blue-800 block font-mono text-[11px] mb-0.5 font-bold uppercase">
-                      Direct Sales Hotline / WhatsApp
-                    </span>
-                    <a
-                      href="tel:+919900048877"
-                      className="text-slate-900 hover:text-blue-700 font-mono font-black text-sm"
-                    >
-                      +91 99000 48877
-                    </a>
-                    <span className="text-slate-600 block text-[11px] mt-0.5 font-medium">
-                      Landline: +91 80 2221 4455 / 2221 4456
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-500/15 via-emerald-50/70 to-white border border-emerald-300 shadow-xs">
-                  <Mail className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-emerald-800 block font-mono text-[11px] mb-0.5 font-bold uppercase">
-                      Official Inquiries &amp; Quotation Submissions
-                    </span>
-                    <a
-                      href="mailto:sales@siddhikabel.com"
-                      className="text-slate-900 hover:text-emerald-700 font-bold text-sm"
-                    >
-                      sales@siddhikabel.com
-                    </a>
-                    <span className="text-slate-600 block text-[11px] mt-0.5 font-medium">
-                      Corporate: enquiry@siddhikabel.com
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Warehouse Dispatch Schedule */}
-            <div className="lg:col-span-6 flex flex-col justify-between bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white border border-indigo-500/40 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-emerald-400 mb-2 font-bold">
-                  <Clock className="w-4 h-4" />
-                  <span>Central Logistics Hub</span>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  Bommasandra Central Warehouse
-                </h3>
-                <p className="text-xs text-slate-300 leading-relaxed mb-6 font-medium">
-                  Equipped for bulk dispatch to Peenya Industrial Estate, Electronic City, Whitefield, Hosur, Chennai, and Hyderabad manufacturing corridors.
-                </p>
-
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between py-2 border-b border-white/10">
-                    <span className="text-slate-400">Monday - Friday:</span>
-                    <span className="font-mono text-white font-bold">9:30 AM - 7:00 PM</span>
-                  </div>
-                  <div className="flex justify-between py-2 border-b border-white/10">
-                    <span className="text-slate-400">Saturday:</span>
-                    <span className="font-mono text-white font-bold">9:30 AM - 5:30 PM</span>
-                  </div>
-                  <div className="flex justify-between py-2 border-b border-white/10">
-                    <span className="text-slate-400">Sunday:</span>
-                    <span className="text-amber-400 font-bold">Emergency Dispatch On-Call</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
-                <a
-                  href="tel:+919900048877"
-                  className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center gap-2 shadow-md shadow-orange-500/20"
-                >
-                  <Phone className="w-4 h-4" />
-                  <span>Call Sales Desk Now</span>
-                </a>
-                <Link
-                  to="/quotation"
-                  className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs rounded-xl transition-colors shadow-2xs"
-                >
-                  Go to Quotation Page
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
 
       {/* Global Quick View Modal */}
       <QuickViewModal
@@ -1200,10 +1009,12 @@ export const Home: React.FC = () => {
       {/* Global RFQ Modal */}
       <RFQModal
         productName={rfqProductName}
+        productPrice={rfqProductPrice}
         isOpen={rfqModalOpen}
         onClose={() => {
           setRfqModalOpen(false);
           setRfqProductName(null);
+          setRfqProductPrice(null);
         }}
       />
     </main>

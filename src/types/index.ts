@@ -103,6 +103,6 @@ export interface QuotationDocument {
   grandTotal: number;
   deliveryTerms: string;
   paymentTerms: string;
-  status: 'Draft' | 'Generated' | 'Sent' | 'Approved';
+  status: 'Draft' | 'Generated' | 'Sent' | 'Approved' | 'RFQ Submitted';
   notes?: string;
 }

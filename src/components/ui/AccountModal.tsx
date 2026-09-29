@@ -123,15 +123,6 @@ export const AccountModal: React.FC = () => {
                       className="w-full bg-white border border-slate-300 rounded-xl p-2 text-slate-900 font-mono"
                     />
                   </div>
-                  <div>
-                    <label className="text-slate-700 block mb-1 font-bold">GSTIN</label>
-                    <input
-                      type="text"
-                      value={gstin}
-                      onChange={(e) => setGstin(e.target.value)}
-                      className="w-full bg-white border border-slate-300 rounded-xl p-2 text-slate-900 font-mono"
-                    />
-                  </div>
                 </div>
 
                 <button
@@ -154,12 +145,6 @@ export const AccountModal: React.FC = () => {
                   <span className="text-slate-400 block font-medium">Authorized Contact</span>
                   <span className="text-slate-900 font-bold text-sm">
                     {user.name}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-slate-400 block font-medium">GSTIN Registration</span>
-                  <span className="text-amber-700 font-mono font-bold">
-                    {user.gstin || "29AABCU9603R1ZM"}
                   </span>
                 </div>
                 <div>

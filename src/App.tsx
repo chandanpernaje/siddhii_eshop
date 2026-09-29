@@ -23,6 +23,7 @@ import { AboutLapp } from "./pages/AboutLapp";
 import { AboutEaton } from "./pages/AboutEaton";
 import { AboutMennekes } from "./pages/AboutMennekes";
 import { AboutPartex } from "./pages/AboutPartex";
+import { Industries } from "./pages/Industries";
 
 export const App: React.FC = () => {
   return (
@@ -54,6 +55,7 @@ export const App: React.FC = () => {
                     <Route path="/about-eaton" element={<AboutEaton />} />
                     <Route path="/about-mennekes" element={<AboutMennekes />} />
                     <Route path="/about-partex" element={<AboutPartex />} />
+                    <Route path="/industries" element={<Industries />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </div>
@@ -74,3 +76,5 @@ export const App: React.FC = () => {
 };
 
 export default App;
+
+

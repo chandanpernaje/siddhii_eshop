@@ -19,18 +19,20 @@ import { validateRFQForm } from "../../utils/validation";
 
 interface RFQModalProps {
   productName: string | null;
+  productPrice?: number | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export const RFQModal: React.FC<RFQModalProps> = ({
   productName,
+  productPrice,
   isOpen,
   onClose,
 }) => {
   const { user, saveQuote } = useAuth();
   const { showToast } = useToast();
-  const { addCustomItem } = useCart();
+  const { cart, clearCart } = useCart();
   const navigate = useNavigate();
 
   const [company, setCompany] = useState(user?.company || "Apex Automation & Switchgear");
@@ -39,18 +41,31 @@ export const RFQModal: React.FC<RFQModalProps> = ({
   const [phone, setPhone] = useState(user?.phone || "+91 98450 12345");
   const [gstin, setGstin] = useState(user?.gstin || "29AABCU9603R1ZM");
   const [city, setCity] = useState(user?.city || "Bangalore");
-  const [quantity, setQuantity] = useState("250");
-  const [unit, setUnit] = useState("meters");
-  const [notes, setNotes] = useState(
-    productName
-      ? `Please provide formal commercial GST quotation for ${productName} with Bangalore warehouse dispatch timeline and factory test reports.`
-      : "Please provide official GST quotation for project schedule requirements."
-  );
+  const [quantity, setQuantity] = useState("As per BOM/Cart");
+  const [unit, setUnit] = useState("lots");
+  const [notes, setNotes] = useState("");
   const [files, setFiles] = useState<{ name: string; size: number }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [generatedQuoteNo, setGeneratedQuoteNo] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const isCartRequest = productName === "Bulk Project Bill of Materials";
+
+  React.useEffect(() => {
+    if (isOpen) {
+      if (isCartRequest && cart.length > 0) {
+        const cartList = cart.map(item => `- ${item.name} [Part: ${item.partNo}] (Qty: ${item.qty} ${item.unit})`).join("\n");
+        setNotes(`Requesting official quotation for the following items selected in my cart:\n\n${cartList}\n\nPlease provide formal commercial quotation with lead times.`);
+      } else {
+        setNotes(
+          productName && !isCartRequest
+            ? `Please provide formal commercial GST quotation for ${productName} with Bangalore warehouse dispatch timeline and factory test reports.`
+            : "Please provide official GST quotation for project schedule requirements."
+        );
+      }
+    }
+  }, [isOpen, isCartRequest, cart, productName]);
 
   if (!isOpen) return null;
 
@@ -91,7 +106,7 @@ export const RFQModal: React.FC<RFQModalProps> = ({
     setGeneratedQuoteNo(quoteId);
 
     const qtyNum = parseFloat(quantity) || 100;
-    const estPrice = 75.0;
+    const estPrice = productPrice || 75.0;
     const subtotal = qtyNum * estPrice;
     const gst = subtotal * 0.18;
     const total = subtotal + gst;
@@ -140,11 +155,14 @@ export const RFQModal: React.FC<RFQModalProps> = ({
     };
 
     saveQuote(doc);
+    if (isCartRequest) {
+      clearCart();
+    }
 
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
-      showToast("Quotation request submitted! Official proforma created.", "success");
+      showToast("Quotation request submitted successfully.", "success");
     }, 600);
   };
 
@@ -160,9 +178,9 @@ export const RFQModal: React.FC<RFQModalProps> = ({
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-2xl bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200 text-slate-900">
+      <div className="relative w-full max-w-2xl bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200 text-slate-900">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div className="px-6 py-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
           <div className="flex items-center gap-2.5">
             <FileSpreadsheet className="w-5 h-5 text-blue-600" />
             <div>
@@ -170,7 +188,7 @@ export const RFQModal: React.FC<RFQModalProps> = ({
                 Request Formal Quotation (RFQ)
               </h3>
               <p className="text-xs text-slate-500 font-medium">
-                {productName ? `Inquiry for: ${productName}` : "Submit Project Bill of Materials for B2B Pricing"}
+                {isCartRequest ? `Submitting quote request for ${cart.length} items from cart` : (productName ? `Inquiry for: ${productName}` : "Submit Project Bill of Materials for B2B Pricing")}
               </p>
             </div>
           </div>
@@ -194,7 +212,7 @@ export const RFQModal: React.FC<RFQModalProps> = ({
               Reference Quote #: {generatedQuoteNo}
             </div>
             <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-              We have generated your formal commercial quotation schedule. Our Bangalore engineering sales desk has dispatched an instant copy to <span className="text-slate-900 font-bold">{email}</span>.
+              We have received your quotation request. Our engineering sales desk will review your requirements and dispatch an official quotation to <span className="text-slate-900 font-bold">{email}</span>.
             </p>
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
@@ -212,7 +230,7 @@ export const RFQModal: React.FC<RFQModalProps> = ({
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
+          <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs overflow-y-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-slate-700 font-bold mb-1">
@@ -277,19 +295,6 @@ export const RFQModal: React.FC<RFQModalProps> = ({
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 font-mono font-bold"
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-slate-700 font-bold mb-1">
-                  Buyer GSTIN (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={gstin}
-                  onChange={(e) => setGstin(e.target.value)}
-                  placeholder="29AABCU9603R1ZM"
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 font-mono uppercase font-bold"
-                />
               </div>
 
               <div>
@@ -393,7 +398,7 @@ export const RFQModal: React.FC<RFQModalProps> = ({
                 disabled={isSubmitting}
                 className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md shadow-blue-500/20 transition-all disabled:opacity-50"
               >
-                {isSubmitting ? "Generating Official Quotation..." : "Submit Quotation Request & Generate Proforma"}
+                {isSubmitting ? "Submitting Request..." : "Submit Quotation Request"}
               </button>
             </div>
           </form>

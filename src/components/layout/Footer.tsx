@@ -11,70 +11,10 @@ import {
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-slate-900 border-t border-slate-800 text-slate-400 text-xs">
-      {/* Top Value Banner */}
-      <div className="border-b border-slate-800/80 bg-slate-850/60 py-10 px-4 lg:px-8">
-        <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-5 h-5 text-amber-400" />
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-1">
-                100% Genuine OEM Sourced
-              </h4>
-              <p className="text-slate-400 leading-relaxed">
-                Direct factory supply with manufacturer warranty, batch test reports, and compliance certificates.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-              <Clock className="w-5 h-5 text-amber-400" />
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-1">
-                Same-Day Bangalore Dispatch
-              </h4>
-              <p className="text-slate-400 leading-relaxed">
-                25,000+ meters in stock across classic control cables, servo systems, and CEE power plugs.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-              <FileText className="w-5 h-5 text-amber-400" />
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-1">
-                Formal GST Commercial Quotations
-              </h4>
-              <p className="text-slate-400 leading-relaxed">
-                Instant project BOM pricing with tiered enterprise volume discounts and freight schedules.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-              <Phone className="w-5 h-5 text-amber-400" />
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-sm mb-1">
-                Dedicated Engineering Desk
-              </h4>
-              <p className="text-slate-400 leading-relaxed">
-                Cable sizing assistance, cross-reference part lookups, and technical CAD drawing support.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <footer id="contact" className="bg-slate-900 border-t border-slate-800 text-slate-400 text-xs">
 
       {/* Main Footer Links */}
-      <div className="w-full py-14 px-4 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+      <div className="max-w-7xl mx-auto w-full py-14 px-4 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
         {/* Col 1: Identity */}
         <div className="lg:col-span-2 space-y-4">
           <div className="bg-white p-2.5 rounded-xl inline-block shadow-sm">
@@ -86,19 +26,8 @@ export const Footer: React.FC = () => {
           </div>
 
           <p className="text-slate-400 leading-relaxed max-w-sm">
-            Premier stocking distributor and supply partner for industrial automation cables, switchgear, heavy-duty CEE connections, and marking technology across South India.
+            Siddhi Kabel Corporation Private Limited is one of the leading and reliable suppliers of world class Industrial Electrical, Automation & Safety Products with over 15 years of industry experience.
           </p>
-
-          <div className="pt-2 text-slate-400 space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-slate-500 font-mono">GSTIN:</span>
-              <span className="font-mono text-slate-200">29AAYCS8872M1ZQ</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-slate-500 font-mono">PAN:</span>
-              <span className="font-mono text-slate-200">AAYCS8872M</span>
-            </div>
-          </div>
         </div>
 
         {/* Col 2: Brand Portfolios */}
@@ -208,9 +137,9 @@ export const Footer: React.FC = () => {
 
       {/* Bottom Legal bar */}
       <div className="border-t border-slate-800 bg-slate-950 py-6 px-4 lg:px-8">
-        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-[11px]">
+        <div className="max-w-7xl mx-auto w-full flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-[11px]">
           <div>
-            &copy; {new Date().getFullYear()} Siddhi Kabel. All Rights Reserved. ÖLFLEX®, UNITRONIC®, SKINTOP® are registered trademarks of LAPP Group.
+            &copy; {new Date().getFullYear()} Siddhi Kabel Corporation. All Rights Reserved. ÖLFLEX®, UNITRONIC®, SKINTOP® are registered trademarks of LAPP Group.
           </div>
           <div className="flex items-center gap-6">
             <Link to="/#about" className="hover:text-slate-300 transition-colors">
