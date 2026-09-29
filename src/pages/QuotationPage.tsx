@@ -190,14 +190,7 @@ export const QuotationPage: React.FC = () => {
               <span>Export CSV</span>
             </button>
 
-            <button
-              onClick={handleSaveToPortal}
-              disabled={cart.length === 0}
-              className="px-3.5 py-2 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 hover:text-white transition-all flex items-center gap-1.5 disabled:opacity-40 shadow-md"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-amber-400" />
-              <span>Submit RFQ</span>
-            </button>
+
 
             <button
               onClick={handlePrint}

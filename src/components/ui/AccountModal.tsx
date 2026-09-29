@@ -159,78 +159,7 @@ export const AccountModal: React.FC = () => {
             )}
           </div>
 
-          {/* Saved Quotations List */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <FileSpreadsheet className="w-4 h-4 text-amber-500" />
-                <span>Generated Quotation Archive ({savedQuotes.length})</span>
-              </h4>
-              <button
-                onClick={() => {
-                  closeAccountModal();
-                  navigate("/quotation");
-                }}
-                className="text-amber-600 hover:text-amber-700 font-bold flex items-center gap-1"
-              >
-                <span>New Quotation</span>
-                <ExternalLink className="w-3 h-3" />
-              </button>
-            </div>
 
-            {savedQuotes.length === 0 ? (
-              <div className="border border-slate-200 rounded-2xl p-6 text-center text-slate-500 bg-slate-50">
-                No formal quotations generated yet. Add products to quote cart to create an official commercial schedule.
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {savedQuotes.map((q) => (
-                  <div
-                    key={q.id}
-                    className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-3 hover:border-slate-300 transition-colors"
-                  >
-                    <div>
-                      <div className="flex items-center gap-2 font-mono text-slate-900 font-bold">
-                        <span>{q.quoteNo}</span>
-                        <span className="text-[10px] text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-300">
-                          {q.status}
-                        </span>
-                      </div>
-                      <span className="text-[11px] text-slate-500">
-                        Date: {q.date} · {q.items.length} item(s) · Valid until: {q.validUntil}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono text-amber-700 font-bold">
-                        ₹{q.grandTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                      </span>
-                      <button
-                        onClick={() => {
-                          const cartItems = q.items.map(item => ({
-                             id: item.id,
-                             partNo: item.partNo,
-                             name: item.name,
-                             brand: item.brand,
-                             price: item.unitPrice,
-                             unit: item.unit,
-                             qty: item.qty,
-                             hsnCode: item.hsnCode
-                          }));
-                          loadCart(cartItems);
-                          closeAccountModal();
-                          navigate("/quotation");
-                        }}
-                        className="px-3 py-1.5 bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 rounded-lg text-[11px] font-bold transition-colors shadow-2xs"
-                      >
-                        View &amp; Print
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Footer */}
