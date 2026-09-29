@@ -15,6 +15,7 @@ interface CartContextType {
   stepUpQty: (id: string) => void;
   stepDownQty: (id: string) => void;
   removeFromCart: (id: string) => void;
+  loadCart: (items: CartItem[]) => void;
   clearCart: () => void;
   totalItems: number;
   subtotal: number;
@@ -276,6 +277,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     showToast("Quotation cart cleared", "info");
   };
 
+  const loadCart = (items: CartItem[]) => {
+    setCart(items);
+  };
+
   const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
   const rawSubtotal = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
 
@@ -307,6 +312,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         stepUpQty,
         stepDownQty,
         removeFromCart,
+        loadCart,
         clearCart,
         totalItems,
         subtotal,

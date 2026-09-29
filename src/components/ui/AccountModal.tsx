@@ -8,9 +8,11 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { useCart } from "../../context/CartContext";
 
 export const AccountModal: React.FC = () => {
   const { user, isAccountModalOpen, closeAccountModal, logout, updateProfile, savedQuotes } = useAuth();
+  const { loadCart } = useCart();
   const [isEditing, setIsEditing] = useState(false);
   const [company, setCompany] = useState(user?.company || "");
   const [name, setName] = useState(user?.name || "");
@@ -205,6 +207,17 @@ export const AccountModal: React.FC = () => {
                       </span>
                       <button
                         onClick={() => {
+                          const cartItems = q.items.map(item => ({
+                             id: item.id,
+                             partNo: item.partNo,
+                             name: item.name,
+                             brand: item.brand,
+                             price: item.unitPrice,
+                             unit: item.unit,
+                             qty: item.qty,
+                             hsnCode: item.hsnCode
+                          }));
+                          loadCart(cartItems);
                           closeAccountModal();
                           navigate("/quotation");
                         }}
