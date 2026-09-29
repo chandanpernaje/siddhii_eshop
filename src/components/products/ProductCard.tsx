@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Plus, Eye, Check, ShieldCheck, Zap } from "lucide-react";
 import type { Product } from "../../types";
 import { useCart } from "../../context/CartContext";
@@ -15,7 +15,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onQuickView,
 }) => {
   const { addToCart, cart } = useCart();
-  const isInCart = cart.some((item) => item.id === product.id);
+  const navigate = useNavigate();
+  
+  const isLappCat1 = product.id === "lapp-cat-1";
+  const isLappOtherCat = product.id.startsWith("lapp-cat-") && product.id !== "lapp-cat-1";
+  const isLappCategory = isLappCat1 || isLappOtherCat;
+  
+  const isInCart = !isLappCategory && cart.some((item) => item.id === product.id);
 
   // Dynamic rich brand styling matching each industrial manufacturer
   const getBrandStyle = (brand: string) => {
@@ -117,19 +123,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         )}
 
-        {/* Quick View Button */}
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onQuickView(product);
-          }}
-          className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white/95 hover:bg-slate-50 text-slate-900 text-xs px-2.5 py-1.5 rounded-lg border border-slate-300 flex items-center gap-1.5 shadow-md backdrop-blur-xs font-bold"
-          title="Quick preview specifications"
-        >
-          <Eye className="w-3.5 h-3.5 text-amber-500" />
-          <span>Quick View</span>
-        </button>
+        {/* Quick View Button - Removed as per user request */}
 
         {/* Stock tag */}
         <div className="absolute top-3 left-3 text-[11px] font-mono text-emerald-800 font-bold flex items-center gap-1.5 bg-white/95 px-2 py-0.5 rounded-md border border-emerald-300 shadow-2xs">
@@ -150,12 +144,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {/* Product Title */}
-        <Link
-          to={`/product-detail?id=${product.id}`}
-          className={`text-xs sm:text-sm font-bold text-slate-900 ${style.titleHover} transition-colors line-clamp-2 mb-2 sm:mb-3 leading-snug break-words hyphens-auto`}
-        >
-          {product.name}
-        </Link>
+        {isLappCat1 ? (
+          <Link
+            to="/olflex-cables"
+            className={`text-xs sm:text-sm font-bold text-slate-900 ${style.titleHover} transition-colors line-clamp-2 mb-2 sm:mb-3 leading-snug break-words hyphens-auto`}
+          >
+            {product.name}
+          </Link>
+        ) : (
+          <div
+            className={`text-xs sm:text-sm font-bold text-slate-900 transition-colors line-clamp-2 mb-2 sm:mb-3 leading-snug break-words hyphens-auto`}
+          >
+            {product.name}
+          </div>
+        )}
 
         {/* Key Specs bullets */}
         <ul className="space-y-1 mb-3 sm:mb-4 text-[11px] sm:text-xs text-slate-700 flex-1 font-medium min-w-0">
@@ -167,44 +169,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           ))}
         </ul>
 
-        {/* Price & Primary Buy / Add to RFQ CTA */}
-        <div className="pt-3 border-t border-slate-200/80 flex items-center justify-between gap-2 mt-auto min-w-0">
-          <div className="flex flex-col min-w-0 shrink-0">
-            <span className="text-[9px] sm:text-[10px] uppercase font-mono text-slate-500 font-bold truncate">
-              Price
-            </span>
-            <div className="flex items-baseline gap-0.5 whitespace-nowrap">
-              <span className={`text-sm sm:text-base font-black ${style.priceText} font-mono tabular-nums`}>
-                ₹{product.price % 1 === 0 ? product.price.toLocaleString("en-IN") : product.price.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
-              <span className="text-[10px] sm:text-xs text-slate-500 font-medium shrink-0">
-                /{product.unit}
-              </span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => addToCart(product, product.unit === "meter" ? 100 : 1)}
-            className={`shrink-0 flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all active:scale-95 shadow-2xs whitespace-nowrap ${
-              isInCart
-                ? "bg-emerald-100 border border-emerald-400 text-emerald-900 hover:bg-emerald-200 font-bold"
-                : `${style.btnGradient}`
-            }`}
-            title={product.unit === "meter" ? "Add standard 100m to quotation" : "Add part to official quotation request"}
-          >
-            {isInCart ? (
-              <>
-                <Check className="w-3.5 h-3.5 shrink-0" />
-                <span>In Quote</span>
-              </>
-            ) : (
-              <>
-                <Plus className="w-3.5 h-3.5 shrink-0" />
-                <span>Request Quote</span>
-              </>
-            )}
-          </button>
-        </div>
+        {/* Primary Buy / Add to RFQ CTA - Removed as per user request */}
       </div>
     </div>
   );

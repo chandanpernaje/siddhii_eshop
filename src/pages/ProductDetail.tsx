@@ -84,11 +84,13 @@ export const ProductDetail: React.FC = () => {
   const [selectedEarth, setSelectedEarth] = useState('Without (All Numbered - X)');
 
   React.useEffect(() => {
-    if (product) {
+    if (product.id === "lapp-cat-1") {
+      navigate("/olflex-cables", { replace: true });
+    } else if (product) {
       setQty(1);
       setSelectedImg(product.image || "/images/cable-olflex-cores.png");
     }
-  }, [product]);
+  }, [product, navigate]);
 
   const { addToCart, cart } = useCart();
   const { showToast } = useToast();
@@ -267,7 +269,27 @@ export const ProductDetail: React.FC = () => {
               </div>
             </div>
 
-
+            {/* Thumbnail Gallery */}
+            <div className="flex items-center gap-3 mt-4">
+              {galleryImages.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedImg(img.src)}
+                  className={`w-20 h-20 rounded-xl border-2 p-1 overflow-hidden transition-all ${
+                    selectedImg === img.src
+                      ? "border-amber-500 shadow-md"
+                      : "border-slate-200 hover:border-amber-300 hover:shadow-sm opacity-70 hover:opacity-100 bg-white"
+                  }`}
+                  title={img.label}
+                >
+                  <img
+                    src={img.src}
+                    alt={img.label}
+                    className="w-full h-full object-contain"
+                  />
+                </button>
+              ))}
+            </div>
 
             {/* Quick Fact sheet */}
             <div className="rounded-2xl bg-white border border-slate-200 p-5 space-y-2 text-xs shadow-2xs">
@@ -387,8 +409,29 @@ export const ProductDetail: React.FC = () => {
               </div>
             )}
 
-            {/* Real-time Meter / Quantity Calculator */}
-            <div className="rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 space-y-5 shadow-lg">
+            {/* Real-time Meter / Quantity Calculator (Hidden for LAPP Categories) */}
+            {product.id.startsWith("lapp-cat-") ? (
+              <div className="rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 space-y-5 shadow-lg">
+                <div className="text-center">
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">Looking for a specific part?</h3>
+                  <p className="text-sm text-slate-600 mb-6">Request a customized bulk quotation for these LAPP products.</p>
+                  <button
+                    onClick={() => {
+                      navigate("/");
+                      setTimeout(() => {
+                        const el = document.getElementById("rfq");
+                        if (el) el.scrollIntoView({ behavior: "smooth" });
+                      }, 100);
+                    }}
+                    className="w-full py-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>Request a Bulk Quote</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 space-y-5 shadow-lg">
               <div className="flex items-baseline justify-between">
                 <div>
                   <span className="text-[11px] uppercase font-mono text-slate-400 font-bold block">
@@ -479,6 +522,7 @@ export const ProductDetail: React.FC = () => {
                 </button>
               </div>
             </div>
+            )}
           </div>
         </div>
 

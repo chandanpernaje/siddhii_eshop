@@ -5,6 +5,8 @@ import {
   OLFLEX_110CY_PRODUCTS as IMPORTED_OLFLEX_110CY,
   OLFLEX_100I_PRODUCTS as IMPORTED_OLFLEX_100I,
 } from "./olflexData";
+import { NEW_OLFLEX_PRODUCTS as IMPORTED_NEW_OLFLEX } from "./olflexNewData";
+import { NEW_LAPP_OTHER_PRODUCTS as IMPORTED_LAPP_OTHER } from "./lappOtherData";
 
 export const PRODUCTS_DATA: Product[] = [
   {
@@ -203,7 +205,7 @@ export const PRODUCTS_DATA: Product[] = [
     stock: "In Stock (120 units)",
     icon: "plug",
     application: "Industrial Machinery, Construction Sites, Power Distribution",
-    image: "/images/product-2.jpg",
+    image: "/images/menn-powertop.jpg",
     hsnCode: "85366990",
   },
   {
@@ -226,7 +228,7 @@ export const PRODUCTS_DATA: Product[] = [
     stock: "In Stock (85 units)",
     icon: "plug",
     application: "Heavy Industry, Outdoor Panels, Harsh Washdown Environments",
-    image: "/images/motors.jpg",
+    image: "/images/menn-panel.jpg",
     hsnCode: "85366990",
   },
   {
@@ -251,6 +253,69 @@ export const PRODUCTS_DATA: Product[] = [
     application: "Workshop Power Feeds, Production Lines, Shipyards",
     image: "/images/menn-amaxx.jpg",
     hsnCode: "85371000",
+  },
+  {
+    id: "menn-04",
+    category: "plugs",
+    brand: "MENNEKES",
+    partNo: "MENN-DUO",
+    name: "DUO Interlocked Switched Sockets",
+    specs: [
+      "Mechanical interlock prevents insertion or withdrawal under live electrical load",
+      "IP67 watertight"
+    ],
+    voltage: "400 V AC",
+    tempRange: "-25°C to +40°C",
+    conductor: "Polyamide casing",
+    price: 3200.0,
+    unit: "piece",
+    stock: "In Stock (40 units)",
+    icon: "plug",
+    application: "Industrial Power Distribution",
+    image: "/images/menn-duo.jpg",
+    hsnCode: "85366990",
+  },
+  {
+    id: "menn-05",
+    category: "plugs",
+    brand: "MENNEKES",
+    partNo: "MENN-EVERGUM",
+    name: "EverGUM® Solid Rubber Enclosures",
+    specs: [
+      "Unbreakable vulcanized rubber distribution boxes",
+      "Designed for brutal mechanical abuse"
+    ],
+    voltage: "400 V AC",
+    tempRange: "-25°C to +40°C",
+    conductor: "Vulcanized Rubber",
+    price: 8500.0,
+    unit: "piece",
+    stock: "In Stock (20 units)",
+    icon: "plug",
+    application: "Shipyards, Construction Sites",
+    image: "/images/menn-evergum.jpg",
+    hsnCode: "85371000",
+  },
+  {
+    id: "menn-06",
+    category: "plugs",
+    brand: "MENNEKES",
+    partNo: "MENN-PHASE",
+    name: "Phase Inverters & Motor Sockets",
+    specs: [
+      "Enables fast 180° rotation of two phase pins",
+      "Reverse 3-phase motor direction without rewiring connections"
+    ],
+    voltage: "400 V AC",
+    tempRange: "-25°C to +40°C",
+    conductor: "Polyamide casing",
+    price: 1800.0,
+    unit: "piece",
+    stock: "In Stock (35 units)",
+    icon: "plug",
+    application: "Motor Reversals",
+    image: "/images/menn-phase.jpg",
+    hsnCode: "85366990",
   },
   {
     id: "eaton-01",
@@ -345,6 +410,48 @@ export const PRODUCTS_DATA: Product[] = [
     hsnCode: "85365090",
   },
   {
+    id: "eaton-05",
+    category: "switchgear",
+    brand: "EATON - MOELLER",
+    partNo: "EATON-FAZ",
+    name: "FAZ Miniature Circuit Breakers",
+    specs: [
+      "High performance 10kA and 15kA breaking capacity MCBs",
+      "Dual-purpose terminals and captive screws"
+    ],
+    voltage: "240/415 V AC",
+    tempRange: "-25°C to +75°C",
+    conductor: "DIN rail mount",
+    price: 350.0,
+    unit: "piece",
+    stock: "In Stock (150 units)",
+    icon: "switchgear",
+    application: "Commercial and Industrial Distribution Boards",
+    image: "/images/eaton-faz.jpg",
+    hsnCode: "85362030",
+  },
+  {
+    id: "eaton-06",
+    category: "switchgear",
+    brand: "EATON - MOELLER",
+    partNo: "EATON-POWERXL",
+    name: "PowerXL Variable Frequency Drives",
+    specs: [
+      "Compact VFDs and soft starters",
+      "Energy-efficient motor control and pump applications"
+    ],
+    voltage: "400 V AC",
+    tempRange: "-10°C to +50°C",
+    conductor: "Screw terminals",
+    price: 14500.0,
+    unit: "piece",
+    stock: "In Stock (15 units)",
+    icon: "switchgear",
+    application: "HVAC, Pumps, Conveyors",
+    image: "/images/eaton-drives.jpg",
+    hsnCode: "85044090",
+  },
+  {
     id: "partex-01",
     category: "marking",
     brand: "PARTEX SWEDEN",
@@ -434,6 +541,48 @@ export const PRODUCTS_DATA: Product[] = [
     icon: "cable",
     application: "Cable bundling, Panel management, General fixing",
     image: "/images/partex-ties.jpg",
+    hsnCode: "39269099",
+  },
+  {
+    id: "partex-05",
+    category: "marking",
+    brand: "PARTEX SWEDEN",
+    partNo: "PARTEX-PO",
+    name: "PO & POZ Oval Marker Sleeves",
+    specs: [
+      "Flexible oval profile designed to conform smoothly over individual wire cores",
+      "Halogen-free ZEROHEX version available"
+    ],
+    voltage: "N/A",
+    tempRange: "-30°C to +60°C",
+    conductor: "PVC / ZEROHEX",
+    price: 250.0,
+    unit: "roll",
+    stock: "In Stock (100 rolls)",
+    icon: "cable",
+    application: "Wire Marking",
+    image: "/images/partex-po.jpg",
+    hsnCode: "39269099",
+  },
+  {
+    id: "partex-06",
+    category: "marking",
+    brand: "PARTEX SWEDEN",
+    partNo: "PARTEX-PC",
+    name: "PC Open-End Snap-On Wire Markers",
+    specs: [
+      "Fast clip-on installation onto terminated wires and cables",
+      "No need to disconnect the terminal connections"
+    ],
+    voltage: "N/A",
+    tempRange: "-30°C to +60°C",
+    conductor: "Polyamide / PVC",
+    price: 280.0,
+    unit: "box",
+    stock: "In Stock (120 boxes)",
+    icon: "cable",
+    application: "Post-termination wire marking",
+    image: "/images/partex-pc.jpg",
     hsnCode: "39269099",
   },
   {
@@ -536,6 +685,8 @@ export const ALL_OLFLEX_PRODUCTS: OlflexProduct[] = [
   ...IMPORTED_OLFLEX_110SY,
   ...IMPORTED_OLFLEX_110CY,
   ...IMPORTED_OLFLEX_100I,
+  ...IMPORTED_NEW_OLFLEX,
+  ...IMPORTED_LAPP_OTHER,
 ];
 
 export const CATEGORIES = [

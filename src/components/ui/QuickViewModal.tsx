@@ -37,7 +37,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 
   if (!isOpen || !product) return null;
 
-  const isInCart = cart.some((i) => i.id === product.id);
+  const isLappCat1 = product.id === "lapp-cat-1";
+  const isLappOtherCat = product.id.startsWith("lapp-cat-") && product.id !== "lapp-cat-1";
+  const isLappCategory = isLappCat1 || isLappOtherCat;
+  const isInCart = !isLappCategory && cart.some((i) => i.id === product.id);
 
   const handleStepUp = () => {
     if (product.unit === "meter") {
@@ -172,74 +175,106 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               )}
             </div>
 
-            {/* Pricing and Stepper */}
-            <div className="pt-4 border-t border-slate-200 space-y-4">
-              <div className="flex items-end justify-between">
-                <div>
-                  <div className="text-[10px] uppercase font-mono text-slate-400">
-                    B2B Contract Rate (Ex-GST)
+            {/* Pricing and Stepper (Hidden for LAPP Categories) */}
+            {!isLappCategory && (
+              <>
+                <div className="pt-4 border-t border-slate-200 space-y-4">
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <div className="text-[10px] uppercase font-mono text-slate-400">
+                        B2B Contract Rate (Ex-GST)
+                      </div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xl font-black font-mono text-slate-900 tabular-nums">
+                          ₹{product.price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                        </span>
+                        <span className="text-xs text-slate-500">/{product.unit}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center border border-slate-300 rounded-lg bg-slate-50 p-1 shadow-2xs">
+                      <button
+                        onClick={handleStepDown}
+                        className="px-2 py-1 text-slate-700 hover:text-slate-900 rounded font-bold text-xs"
+                        title={product.unit === "meter" ? "Decrease by 25m" : "Decrease"}
+                      >
+                        - {product.unit === "meter" && <span className="text-[10px] font-mono">25</span>}
+                      </button>
+                      <span className="px-2.5 text-xs font-mono font-bold text-slate-900 tabular-nums">
+                        {qty} {product.unit}
+                      </span>
+                      <button
+                        onClick={handleStepUp}
+                        className="px-2 py-1 text-slate-700 hover:text-slate-900 rounded font-bold text-xs"
+                        title={product.unit === "meter" ? "Increase by 25m (e.g. 100m -> 125m)" : "Increase"}
+                      >
+                        + {product.unit === "meter" && <span className="text-[10px] font-mono">25</span>}
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-xl font-black font-mono text-slate-900 tabular-nums">
-                      ₹{product.price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                    </span>
-                    <span className="text-xs text-slate-500">/{product.unit}</span>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={handleAdd}
+                      className={`py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 ${
+                        isInCart
+                          ? "bg-emerald-50 border border-emerald-300 text-emerald-800"
+                          : "bg-amber-500 hover:bg-amber-600 text-white shadow-sm"
+                      }`}
+                    >
+                      {isInCart ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          <span>Update Schedule</span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          <span>Add to Quote Cart</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={handleCustomQuote}
+                      className="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Formal Quotation</span>
+                    </button>
                   </div>
                 </div>
+              </>
+            )}
 
-                <div className="flex items-center border border-slate-300 rounded-lg bg-slate-50 p-1 shadow-2xs">
-                  <button
-                    onClick={handleStepDown}
-                    className="px-2 py-1 text-slate-700 hover:text-slate-900 rounded font-bold text-xs"
-                    title={product.unit === "meter" ? "Decrease by 25m" : "Decrease"}
-                  >
-                    - {product.unit === "meter" && <span className="text-[10px] font-mono">25</span>}
-                  </button>
-                  <span className="px-2.5 text-xs font-mono font-bold text-slate-900 tabular-nums">
-                    {qty} {product.unit}
-                  </span>
-                  <button
-                    onClick={handleStepUp}
-                    className="px-2 py-1 text-slate-700 hover:text-slate-900 rounded font-bold text-xs"
-                    title={product.unit === "meter" ? "Increase by 25m (e.g. 100m -> 125m)" : "Increase"}
-                  >
-                    + {product.unit === "meter" && <span className="text-[10px] font-mono">25</span>}
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+            {isLappCategory && (
+              <div className="pt-4 border-t border-slate-200">
                 <button
-                  onClick={handleAdd}
-                  className={`py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 ${
-                    isInCart
-                      ? "bg-emerald-50 border border-emerald-300 text-emerald-800"
-                      : "bg-amber-500 hover:bg-amber-600 text-white shadow-sm"
-                  }`}
+                  onClick={() => {
+                    onClose();
+                    if (isLappCat1) {
+                      navigate("/olflex-cables");
+                    } else {
+                      if (window.location.pathname !== "/") {
+                        navigate("/");
+                        setTimeout(() => {
+                          const el = document.getElementById("rfq");
+                          if (el) el.scrollIntoView({ behavior: "smooth" });
+                        }, 100);
+                      } else {
+                        const el = document.getElementById("rfq");
+                        if (el) el.scrollIntoView({ behavior: "smooth" });
+                      }
+                    }
+                  }}
+                  className="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-sm font-bold text-sm transition-all"
                 >
-                  {isInCart ? (
-                    <>
-                      <Check className="w-4 h-4" />
-                      <span>Update Schedule</span>
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-4 h-4" />
-                      <span>Add to Quote Cart</span>
-                    </>
-                  )}
-                </button>
-
-                <button
-                  onClick={handleCustomQuote}
-                  className="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <FileText className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Formal Quotation</span>
+                  {isLappCat1 ? "View Detailed LAPP Catalog" : "Request a Bulk Quote"}
                 </button>
               </div>
+            )}
 
-              <div className="text-center">
+            <div className="text-center mt-4">
                 <Link
                   to={`/product-detail?id=${product.id}`}
                   onClick={onClose}
@@ -253,6 +288,5 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           </div>
         </div>
       </div>
-    </div>
   );
 };

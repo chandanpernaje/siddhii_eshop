@@ -311,7 +311,6 @@ export const OlflexCables: React.FC = () => {
                   <th className="py-3.5 px-3 text-right">Outer Dia</th>
                   <th className="py-3.5 px-3 text-right">Cu Index</th>
                   <th className="py-3.5 px-3 text-right">Weight</th>
-                  <th className="py-3.5 px-4 text-right">Rate / Meter</th>
                   <th className="py-3.5 px-4 text-right">Meter Reel Qty</th>
                   <th className="py-3.5 px-4 text-center">Action</th>
                 </tr>
@@ -371,15 +370,6 @@ export const OlflexCables: React.FC = () => {
 
                       <td className="py-3 px-3 text-right font-mono tabular-nums text-slate-600 font-medium">
                         {cable.weight ? `${cable.weight} kg` : "—"}
-                      </td>
-
-                      <td className="py-3 px-4 text-right font-mono tabular-nums whitespace-nowrap">
-                        <div className="font-bold text-slate-900 text-sm">
-                          ₹{cable.price.toFixed(2)}
-                        </div>
-                        <div className="text-[10px] text-slate-400 line-through">
-                          MRP ₹{cable.mrp.toFixed(2)}
-                        </div>
                       </td>
 
                       <td className="py-3 px-4 text-right">

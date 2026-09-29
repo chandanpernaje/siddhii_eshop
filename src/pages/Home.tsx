@@ -104,7 +104,7 @@ export const Home: React.FC = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % 4);
-    }, 6000);
+    }, 12000);
     return () => clearInterval(timer);
   }, []);
 
